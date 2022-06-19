@@ -4,6 +4,9 @@
 script_folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 setwd(script_folder)
 
+# Note data folder
+data_folder <- file.path("..", "data")
+
 # Load functions
 source("functions.R")
 
@@ -14,14 +17,14 @@ description_column <- "Transaction Description"
 
 # Load the transactions
 transactions <- read.csv(
-  file.path("data", "14279266_20221417_0806.csv"), 
+  file.path(data_folder, "14279266_20221417_0806.csv"), 
   stringsAsFactors = FALSE,
   check.names = FALSE
 )
 
 # Load transaction coding dictionary
 transaction_types <- read.csv(
-  "transaction_coding_dictionary.csv",
+  file.path(data_folder, "transaction_coding_dictionary.csv"),
   stringsAsFactors = FALSE
 )
 transaction_coding <- build_transaction_coding_dictionary(transaction_types)
@@ -29,4 +32,20 @@ transaction_coding <- build_transaction_coding_dictionary(transaction_types)
 #### Process transactions ####
 
 # Convert date column to dates
-transactions[, date_column] <- as.Date(transactions[, date_column])
+transactions[, date_column] <- as.Date(
+  transactions[, date_column], 
+  format = date_format
+)
+
+# Extract month from dates
+transactions$month <- format(transactions[, date_column], "%B")
+
+# Convert descriptions to lowercase
+transactions[, description_column] <- tolower(transactions[, description_column])
+
+# Classify transactions based on key words
+transactions[, c("Type", "Pattern")] <-  
+  classify_transactions(
+    transactions[, description_column],
+    transaction_coding
+  )
