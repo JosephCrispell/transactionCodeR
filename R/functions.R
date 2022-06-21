@@ -10,8 +10,8 @@
 build_transaction_coding_dictionary <- function(transactions_coding_df, delimiter = ";"){
   
   # Check transactions coding dataframe
-  col_names <- colnames(transactions_coding_df)
-  if(col_names[1] != "Type" || col_names[2] != "Patterns" || ncol(transactions_coding_df) != 2){
+  column_names <- colnames(transactions_coding_df)
+  if(column_names[1] != "Type" || column_names[2] != "Patterns" || ncol(transactions_coding_df) != 2){
     stop(paste("ERROR! Input transactions coding dataframe doesn't expected structure. Should have two columns",
                "entitled \"Type\" and \"Patterns\"!"))
   }
@@ -20,7 +20,13 @@ build_transaction_coding_dictionary <- function(transactions_coding_df, delimite
   transactions_coding_df$Patterns <- tolower(transactions_coding_df$Patterns)
   
   # Initialise list to store transaction types and patterns
-  transaction_coding_list <- list()
+  transaction_coding_list <- lapply(
+    transactions_coding_df$Patterns,
+    FUN=function(delimited_patterns, delimiter){
+      unlist(strsplit(transactions_coding_df[row, "Patterns"], split = delimiter))
+    },
+    delimiter
+  )
   
   # Examine each transaction coding
   for(row in seq_len(nrow(transactions_coding_df))){
@@ -97,11 +103,22 @@ classify_transactions <- function(descriptions, transaction_coding){
 #'
 #' Sum total money going in (credit) and out (debit) of account (based on transactions)
 #' by month.
-#' @param description string description of transaction
-#' @param transaction_coding list of pattern vectors defining transaction types
-#' @return Returns of named vector with transaction type and pattern that matched
+#' @param transactions dataframe containing transaction details
+#' @param in_column name of column in transactions dataframe containing money going in (credit)
+#' @param out_column name of column in transactions dataframe containing money going out (debit)
+#' @param month_column name of column in transactions dataframe containing month of transaction
+#' @return Returns of dataframe recording total money in and out by month. Includes:
+#'         - difference column (in minus out) -what you save/lose each month
+#'         - Average row at bottom calculating average of in, out, and difference across months
 summarise_monthly_totals <- function(transactions, in_column, 
                                      out_column, month_column = "month"){
+  
+  # Check the required columns are in the transactions dataframe
+  column_names <- colnames(transactions)
+  if(sum(c(in_column, out_column, month_column) %in% column_names) != 3){
+    stop(paste0("ERROR! The required columns (", in_column, ", ", out_column,
+                ", ", month_column, ") are not present in the transaction dataframe!"))
+  }
   
   # Calculate totals by month
   totals_by_month <- aggregate(
@@ -119,4 +136,6 @@ summarise_monthly_totals <- function(transactions, in_column,
   n_row <- nrow(totals_by_month)
   totals_by_month[n_row + 1, month_column] <- "Average"
   totals_by_month[n_row + 1, -1] <- colMeans(totals_by_month[, -1], na.rm=TRUE)
+  
+  return(totals_by_month)
 }
