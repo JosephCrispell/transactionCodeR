@@ -55,22 +55,46 @@ transactions[, c("Type", "Pattern")] <-
 #### Identify unclassified transactions ####
 
 # Identify unclassified transactions
-unclassified <- transactions[is.na(transactions$Type), ]
+unclassified <- transactions[transactions$Type == "Unclassified", ]
 
 # Identify standing orders/direct debits?
 unique_descriptions <- table(unclassified[, description_column])
 frequent_unclassified_descriptions <- unique_descriptions[unique_descriptions > 1]
+frequent_unclassified_descriptions <- 
+  frequent_unclassified_descriptions[order(frequent_unclassified_descriptions, decreasing = TRUE)]
 
-#### Calculate monthly pay and costs ####
+#### Calculate monthly statistics ####
 
 # Calculate total pay and costs by month
-totals_by_month <- summarise_monthly_totals(
+totals_by_month <- summarise_transactions(
   transactions = transactions,
   in_column = in_column,
-  out_column = out_column
+  out_column = out_column,
+  grouping_columns = "month",
+  FUN=sum
 )
 
 # Calculate costs by month and type
-totals_by_type_and_month <- aggregate(
-  transactions[]
+totals_by_type_and_month <- summarise_transactions(
+  transactions = transactions,
+  in_column = in_column,
+  out_column = out_column,
+  grouping_columns = c("month", "Type"),
+  FUN=sum,
+  calculate_average = FALSE, calculate_difference = FALSE
 )
+
+# Calculate average in/out on each type
+average_by_type <- summarise_transactions(
+  transactions = totals_by_type_and_month,
+  in_column = in_column,
+  out_column = out_column,
+  grouping_columns = "Type",
+  FUN=mean,
+  calculate_average = FALSE
+)
+
+#### Plots ####
+
+# Plot in and out payments by type through time
+plot_monthly_in_out_for_each_type(totals_by_type_and_month)

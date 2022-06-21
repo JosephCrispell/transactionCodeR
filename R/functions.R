@@ -47,8 +47,8 @@ classify_transaction <- function(description, transaction_coding){
   }
   
   # Initialise variable to store transaction type
-  transaction_type <- NA
-  type_pattern <- NA
+  transaction_type <- "Unclassified"
+  type_pattern <- "Unclassified"
   
   # Examine each transaction type
   for(type in names(transaction_coding)){
@@ -90,43 +90,104 @@ classify_transactions <- function(descriptions, transaction_coding){
   return(types)
 }
 
-#' Calculate total transactions in and out by month
+#' Calculate total transactions in and out by grouping columns
 #'
-#' Sum total money going in (credit) and out (debit) of account (based on transactions)
-#' by month.
+#' Summarise total money going in (credit) and out (debit) of account (based on transactions)
+#' by selected grouping columns.
 #' @param transactions dataframe containing transaction details
 #' @param in_column name of column in transactions dataframe containing money going in (credit)
 #' @param out_column name of column in transactions dataframe containing money going out (debit)
-#' @param month_column name of column in transactions dataframe containing month of transaction
-#' @return Returns of dataframe recording total money in and out by month. Includes:
+#' @param grouping_columns vector of columns to group by
+#' @param calculate_average boolean value to determine whether to add row at bottom for averages. Defaults to TRUE
+#' @param calculate_difference boolean value to determine whether to calculate difference between in and out for each row. Defaults to TRUE
+#' @param ... additional parameters to send to aggregate
+#' @return Returns of dataframe recording total money in and out by month. If selected will include:
 #'         - difference column (in minus out) -what you save/lose each month
 #'         - Average row at bottom calculating average of in, out, and difference across months
-summarise_monthly_totals <- function(transactions, in_column, 
-                                     out_column, month_column = "month"){
+summarise_transactions <- function(transactions, in_column, 
+                                   out_column, grouping_columns,
+                                   calculate_average = TRUE,
+                                   calculate_difference = TRUE,
+                                   ...){
+  
+  # Note required columns
+  required_columns <- c(in_column, out_column, grouping_columns)
   
   # Check the required columns are in the transactions dataframe
   column_names <- colnames(transactions)
-  if(sum(c(in_column, out_column, month_column) %in% column_names) != 3){
-    stop(paste0("ERROR! The required columns (", in_column, ", ", out_column,
-                ", ", month_column, ") are not present in the transaction dataframe!"))
+  if(sum(required_columns %in% column_names) != length(required_columns)){
+    stop(paste0("ERROR! The required columns (", 
+                paste(required_columns, collapse = ", "),
+                ") are not present in the transaction dataframe!"))
   }
   
-  # Calculate totals by month
-  totals_by_month <- aggregate(
-    transactions[, c(in_column, out_column)],
-    by=list(transactions[, month_column]),
-    FUN=sum,
-    na.rm=TRUE
+  # Build grouping list
+  column_values_for_grouping <- lapply(
+    grouping_columns,
+    FUN=function(column, transactions){
+      return(transactions[, column])
+    },
+    transactions
   )
-  colnames(totals_by_month)[1] <- month_column
   
-  # Add difference column
-  totals_by_month$difference <- totals_by_month[, in_column] - totals_by_month[, out_column]
+  # Calculate summary stats by grouping columns
+  summary_stats <- aggregate(
+    transactions[, c(in_column, out_column)],
+    by=column_values_for_grouping,
+    ...,
+    na.rm = TRUE,
+    drop = FALSE
+  )
+  colnames(summary_stats)[seq_along(grouping_columns)] <- grouping_columns
+  
+  # Add difference column - if requested
+  if(calculate_difference){
+    summary_stats$difference <- summary_stats[, in_column] - summary_stats[, out_column]
+  }
   
   # Calculate average in and out
-  n_row <- nrow(totals_by_month)
-  totals_by_month[n_row + 1, month_column] <- "Average"
-  totals_by_month[n_row + 1, -1] <- colMeans(totals_by_month[, -1], na.rm=TRUE)
+  if(calculate_average){
+    n_row <- nrow(summary_stats)
+    column_names <- colnames(summary_stats)
+    value_columns <- which(column_names %in% grouping_columns == FALSE)
+    summary_stats[n_row + 1, 1] <- "Average"
+    summary_stats[n_row + 1, value_columns] <- 
+      colMeans(summary_stats[, value_columns], na.rm=TRUE)
+  }
   
-  return(totals_by_month)
+  return(summary_stats)
+}
+
+plot_monthly_in_out_for_each_type <- function(totals_by_type_and_month){
+  
+  # Get months
+  months <- unique(totals_by_type_and_month$month)
+  
+  # Create an empty plot
+  plot(x=NA, y=NA,
+       xlim=c(0, length(months) - 0.5), 
+       ylim=c(-max(totals_by_type_and_month[, out_column], na.rm = TRUE),
+              max(totals_by_type_and_month[, in_column], na.rm = TRUE)),
+       bty="n", las=1,
+       xaxt = "n", xlab="", ylab="£",
+       main = "Monthly in/out for each type")
+  
+  # Add X axis
+  x_ticks <- seq(0.5, length(months) - 0.5)
+  axis(side = 1, at = x_ticks, labels = months)
+  
+  # Add line for each type
+  for(type in unique(totals_by_type_and_month$Type)){
+    
+    # Get subset for current type
+    type_values <- totals_by_type_and_month[totals_by_type_and_month$Type == type, ]
+    
+    # Add line for in
+    points(x=x_ticks, y=type_values[, in_column],
+           type = "o", pch = 19, col = rgb(1,0,0, 0.5))
+    
+    # Add line for out
+    points(x=x_ticks, y=-type_values[, out_column],
+           type = "o", pch = 19, col = rgb(0,0,1, 0.5))
+  }
 }
