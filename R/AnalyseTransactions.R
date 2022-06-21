@@ -14,6 +14,8 @@ source("functions.R")
 date_column <- "Transaction Date"
 date_format <- "%d/%m/%Y"
 description_column <- "Transaction Description"
+in_column <- "Credit Amount"
+out_column <- "Debit Amount"
 
 # Load the transactions
 transactions <- read.csv(
@@ -38,7 +40,7 @@ transactions[, date_column] <- as.Date(
 )
 
 # Extract month from dates
-transactions$month <- format(transactions[, date_column], "%B")
+transactions$month <- format(transactions[, date_column], "%m/%Y")
 
 # Convert descriptions to lowercase
 transactions[, description_column] <- tolower(transactions[, description_column])
@@ -49,3 +51,27 @@ transactions[, c("Type", "Pattern")] <-
     transactions[, description_column],
     transaction_coding
   )
+
+#### Identify unclassified transactions ####
+
+# Identify unclassified transactions
+unclassified <- transactions[is.na(transactions$Type), ]
+
+# Identify standing orders/direct debits?
+unique_descriptions <- table(unclassified[, description_column])
+frequent_unclassified_descriptions <- unique_descriptions[unique_descriptions > 1]
+
+#### Calculate monthly pay and costs ####
+
+# Calculate total pay and costs by month
+totals_by_month <- aggregate(
+  transactions[, c(in_column, out_column)],
+  by=list(transactions$month),
+  FUN=sum,
+  na.rm=TRUE
+)
+
+# Calculate average monthly pay and costs
+
+# Calculate costs by month and type
+aggregate()

@@ -92,3 +92,31 @@ classify_transactions <- function(descriptions, transaction_coding){
   
   return(types)
 }
+
+#' Calculate total transactions in and out by month
+#'
+#' Sum total money going in (credit) and out (debit) of account (based on transactions)
+#' by month.
+#' @param description string description of transaction
+#' @param transaction_coding list of pattern vectors defining transaction types
+#' @return Returns of named vector with transaction type and pattern that matched
+summarise_monthly_totals <- function(transactions, in_column, 
+                                     out_column, month_column = "month"){
+  
+  # Calculate totals by month
+  totals_by_month <- aggregate(
+    transactions[, c(in_column, out_column)],
+    by=list(transactions[, month_column]),
+    FUN=sum,
+    na.rm=TRUE
+  )
+  colnames(totals_by_month)[1] <- month_column
+  
+  # Add difference column
+  totals_by_month$difference <- totals_by_month[, in_column] - totals_by_month[, out_column]
+  
+  # Calculate average in and out
+  n_row <- nrow(totals_by_month)
+  totals_by_month[n_row + 1, month_column] <- "Average"
+  totals_by_month[n_row + 1, -1] <- colMeans(totals_by_month[, -1], na.rm=TRUE)
+}
