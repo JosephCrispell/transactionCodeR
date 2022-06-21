@@ -23,20 +23,11 @@ build_transaction_coding_dictionary <- function(transactions_coding_df, delimite
   transaction_coding_list <- lapply(
     transactions_coding_df$Patterns,
     FUN=function(delimited_patterns, delimiter){
-      unlist(strsplit(transactions_coding_df[row, "Patterns"], split = delimiter))
+      unlist(strsplit(delimited_patterns, split = delimiter))
     },
     delimiter
   )
-  
-  # Examine each transaction coding
-  for(row in seq_len(nrow(transactions_coding_df))){
-    
-    # Extract patterns for current transaction type
-    patterns <- unlist(strsplit(transactions_coding_df[row, "Patterns"], split = delimiter))
-    
-    # Store the patterns
-    transaction_coding_list[[transactions_coding_df[row, "Type"]]] <- patterns
-  }
+  names(transaction_coding_list) <- transactions_coding_df$Type
   
   return(transaction_coding_list)
 }

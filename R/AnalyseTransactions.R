@@ -65,12 +65,12 @@ frequent_unclassified_descriptions <- unique_descriptions[unique_descriptions > 
 
 # Calculate total pay and costs by month
 totals_by_month <- summarise_monthly_totals(
-  ttransactions = transactions,
+  transactions = transactions,
   in_column = in_column,
   out_column = out_column
 )
 
-# Calculate average monthly pay and costs
-
 # Calculate costs by month and type
-aggregate()
+totals_by_type_and_month <- aggregate(
+  transactions[]
+)
