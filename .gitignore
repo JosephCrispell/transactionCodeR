@@ -2,6 +2,9 @@
 data/*
 !data/README.md
 
+# Ignore any reports
+*.html
+
 # Ignore mac files
 *.DS_Store
 
