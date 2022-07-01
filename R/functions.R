@@ -167,14 +167,17 @@ summarise_transactions <- function(transactions, in_column,
 #' @param y_axis_label label for Y axis. Defaults to "£"
 #' @param title title for plot. Defaults to "Values by month"
 #' @param point_shape shape for points on line. Defaults to 19 (circle)
-#' @param legend_x x position for legend, can also be text version of position ("bottomleft"). Defaults to "left".
-#' @param legend_y y position for legend. Defaults to NULL.
 #' @param add_zero_line boolean value indicating whether to add horizontal line at zero on Y axis. Defaults to TRUE.
+#' @param margins four value vector for margin sizes (bottom, left, top, right). Defaults to c(5.1, 4.1, 4.1, 8)
 plot_values_by_month_static <- function(
   data, month_column = "month", y_axis_label = "£",
-  title = "Values by month", point_shape = 19,
-  legend_x = "left", legend_y = NULL, add_zero_line = TRUE
+  title = "Values by month", point_shape = 19, add_zero_line = TRUE,
+  margins = c(5.1, 4.1, 4.1, 8)
 ){
+  
+  # Get and set plotting margins
+  current_mar <- par()$mar
+  par(mar = margins)
   
   # Get months and month column index
   column_names <- colnames(data)
@@ -189,7 +192,7 @@ plot_values_by_month_static <- function(
   
   # Create an empty plot
   plot(x=NA, y=NA,
-       xlim=c(0, length(months) - 0.5), 
+       xlim=c(0.25, length(months) - 0.5), 
        ylim=y_limits,
        bty="n", las=1, xaxt = "n", xlab="", 
        ylab=y_axis_label, main = title)
@@ -207,14 +210,17 @@ plot_values_by_month_static <- function(
   }
   
   # Add legend
-  legend(x = legend_x, y = legend_y,
+  legend(x = x_ticks[length(x_ticks)] + 0.05, y = y_limits[2],
          legend = column_names[-month_column_index],
          col = colours,
          lty = 1, pch = point_shape,
-         bty = "n")
+         bty = "n", xpd = TRUE)
   
   # Add zero line if requested
   if(add_zero_line){
     lines(x=x_ticks, y=rep(0, length(months)), lty = 2)
   }
+  
+  # Reset plotting margins
+  par(mar = current_mar)
 }

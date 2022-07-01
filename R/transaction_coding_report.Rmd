@@ -59,6 +59,13 @@ datatable(transaction_types)
 ```
 
 ```{r transactions_dates}
+# Convert date column to dates
+transactions[, date_column] <- as.Date(
+  transactions[, date_column], 
+  format = date_format
+)
+
+# Get date range
 transactions_dates <- range(transactions[, date_column])
 ```
 
@@ -69,20 +76,13 @@ Bank transactions were provided for the from `r format(transactions_dates[1], "%
 - `r in_column` - amount of money paid in
 - `r out_column` - amount of money paid out
 
-```{r types_table}
+```{r transactions}
 datatable(transactions[, c(date_column, in_column, out_column, description_column)])
 ```
 
 # Unclassified transactions
 
 ```{r process_transactions, include=FALSE}
-
-# Convert date column to dates
-transactions[, date_column] <- as.Date(
-  transactions[, date_column], 
-  format = date_format
-)
-
 # Extract month from dates
 transactions$month <- format(transactions[, date_column], "%m/%Y")
 
@@ -146,12 +146,11 @@ Without considering transaction type the average monthly earnings, costs, and sa
 - Savings: £`r format(round(average_savings, 0), big.mark=",")`
 
 Here is how the above values vary by month:
-```{r plot_monthly_totals_static, include=FALSE}
-plot_values_by_month(
+```{r plot_monthly_totals_static}
+plot_values_by_month_static(
   totals_by_month[-nrow(totals_by_month), ],
   title = "Total money in and out by month")
 ```
-
 
 # Monthly earnings and costs by type
 
