@@ -169,10 +169,11 @@ summarise_transactions <- function(transactions, in_column,
 #' @param point_shape shape for points on line. Defaults to 19 (circle)
 #' @param add_zero_line boolean value indicating whether to add horizontal line at zero on Y axis. Defaults to TRUE.
 #' @param margins four value vector for margin sizes (bottom, left, top, right). Defaults to c(5.1, 4.1, 4.1, 8)
+#' @param legend_cex scaling value for legend size. Defaults to 1.
 plot_values_by_month_static <- function(
   data, month_column = "month", y_axis_label = "£",
   title = "Values by month", point_shape = 19, add_zero_line = TRUE,
-  margins = c(5.1, 4.1, 4.1, 8)
+  margins = c(5.1, 4.1, 4.1, 8), legend_cex = 1
 ){
   
   # Get and set plotting margins
@@ -214,7 +215,7 @@ plot_values_by_month_static <- function(
          legend = column_names[-month_column_index],
          col = colours,
          lty = 1, pch = point_shape,
-         bty = "n", xpd = TRUE)
+         bty = "n", xpd = TRUE, cex = legend_cex)
   
   # Add zero line if requested
   if(add_zero_line){

@@ -149,7 +149,7 @@ Here is how the above values vary by month:
 ```{r plot_monthly_totals_static}
 plot_values_by_month_static(
   totals_by_month[-nrow(totals_by_month), ],
-  title = "Total money in and out by month")
+  title = "Total money in and out")
 ```
 
 # Monthly earnings and costs by type
@@ -162,7 +162,7 @@ totals_by_type_and_month <- summarise_transactions(
   out_column = out_column,
   grouping_columns = c("month", "Type"),
   FUN=sum,
-  calculate_average = FALSE, calculate_difference = FALSE
+  calculate_average = FALSE
 )
 
 # Calculate average in/out on each type
@@ -175,5 +175,25 @@ average_by_type <- summarise_transactions(
   FUN=mean,
   calculate_average = FALSE
 )
+```
+
+Considering the transaction type we can break down the monthly earnings, costs, and savings on average across the months considered:
+
+And by month:
+
+```{r type_by_month_static}
+# Get each types difference by month as column
+# Taken from: https://stackoverflow.com/questions/67778341/are-there-alternative-r-base-functions-to-pivot-wider
+totals_by_type_and_month$Type <- as.factor(totals_by_type_and_month$Type)
+type_difference_by_month <- as.data.frame.matrix(
+  xtabs(difference ~ month + Type, totals_by_type_and_month)
+)
+type_difference_by_month$month <- row.names(type_difference_by_month)
+
+# Plot each type by month
+plot_values_by_month_static(
+  type_difference_by_month,
+  title = "Money in/out by type",
+  legend_cex = 0.45)
 ```
 
