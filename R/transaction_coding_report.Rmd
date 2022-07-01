@@ -119,9 +119,7 @@ datatable(unique_descriptions)
 
 # Average monthly earnings and costs
 
-# Monthly earnings and costs by type
-
-```{r monthly_statistics, include=FALSE}
+```{r monthly_totals, include=FALSE}
 # Calculate total pay and costs by month
 totals_by_month <- summarise_transactions(
   transactions = transactions,
@@ -131,6 +129,33 @@ totals_by_month <- summarise_transactions(
   FUN=sum
 )
 
+# Make debit column negative
+totals_by_month$`Debit Amount` <- -totals_by_month$`Debit Amount`
+
+# Note average stats
+n_rows <- nrow(totals_by_month)
+average_in <- totals_by_month[n_rows, in_column]
+average_out <- totals_by_month[n_rows, out_column]
+average_savings <- totals_by_month[n_rows, "difference"]
+```
+
+Without considering transaction type the average monthly earnings, costs, and savings are the following:
+
+- Earnings: £`r format(round(average_in, 0), big.mark=",")`
+- Costs: £`r format(round(average_out, 0), big.mark=",")`
+- Savings: £`r format(round(average_savings, 0), big.mark=",")`
+
+Here is how the above values vary by month:
+```{r plot_monthly_totals_static, include=FALSE}
+plot_values_by_month(
+  totals_by_month[-nrow(totals_by_month), ],
+  title = "Total money in and out by month")
+```
+
+
+# Monthly earnings and costs by type
+
+```{r by_type, include=FALSE}
 # Calculate costs by month and type
 totals_by_type_and_month <- summarise_transactions(
   transactions = transactions,
@@ -151,8 +176,5 @@ average_by_type <- summarise_transactions(
   FUN=mean,
   calculate_average = FALSE
 )
-
-# Get car associated costs
-car_types <- c("Car", "Petrol", "Car emergency")
-car_average_monthly_costs <- average_by_type[average_by_type$Type %in% car_types, ]
 ```
+

@@ -158,36 +158,63 @@ summarise_transactions <- function(transactions, in_column,
   return(summary_stats)
 }
 
-plot_monthly_in_out_for_each_type <- function(totals_by_type_and_month){
+#' Plot values by month
+#'
+#' Given dataframe with months in one column and values in other column(s),
+#' this function will plot the values against the months
+#' @param data dataframe with month and value columns
+#' @param month_column column with months in. Defaults to "month"
+#' @param y_axis_label label for Y axis. Defaults to "£"
+#' @param title title for plot. Defaults to "Values by month"
+#' @param point_shape shape for points on line. Defaults to 19 (circle)
+#' @param legend_x x position for legend, can also be text version of position ("bottomleft"). Defaults to "left".
+#' @param legend_y y position for legend. Defaults to NULL.
+#' @param add_zero_line boolean value indicating whether to add horizontal line at zero on Y axis. Defaults to TRUE.
+plot_values_by_month_static <- function(
+  data, month_column = "month", y_axis_label = "£",
+  title = "Values by month", point_shape = 19,
+  legend_x = "left", legend_y = NULL, add_zero_line = TRUE
+){
   
-  # Get months
-  months <- unique(totals_by_type_and_month$month)
+  # Get months and month column index
+  column_names <- colnames(data)
+  month_column_index <- which(column_names == month_column)
+  months <- data[, month_column]
+  
+  # Calculate Y axis limits
+  y_limits <- range(data[, -month_column_index], na.rm = TRUE)
+  
+  # Define colours for each column of values
+  colours <- rainbow(ncol(data) - 1)
   
   # Create an empty plot
   plot(x=NA, y=NA,
        xlim=c(0, length(months) - 0.5), 
-       ylim=c(-max(totals_by_type_and_month[, out_column], na.rm = TRUE),
-              max(totals_by_type_and_month[, in_column], na.rm = TRUE)),
-       bty="n", las=1,
-       xaxt = "n", xlab="", ylab="£",
-       main = "Monthly in/out for each type")
+       ylim=y_limits,
+       bty="n", las=1, xaxt = "n", xlab="", 
+       ylab=y_axis_label, main = title)
   
   # Add X axis
   x_ticks <- seq(0.5, length(months) - 0.5)
   axis(side = 1, at = x_ticks, labels = months)
   
-  # Add line for each type
-  for(type in unique(totals_by_type_and_month$Type)){
+  # Add line for each set of values
+  for(column_index in seq_len(ncol(data))[-month_column_index]){
     
-    # Get subset for current type
-    type_values <- totals_by_type_and_month[totals_by_type_and_month$Type == type, ]
-    
-    # Add line for in
-    points(x=x_ticks, y=type_values[, in_column],
-           type = "o", pch = 19, col = rgb(1,0,0, 0.5))
-    
-    # Add line for out
-    points(x=x_ticks, y=-type_values[, out_column],
-           type = "o", pch = 19, col = rgb(0,0,1, 0.5))
+    points(x=x_ticks, y=data[, column_index],
+           type = "o", pch = point_shape,
+           col = colours[column_index - 1])
+  }
+  
+  # Add legend
+  legend(x = legend_x, y = legend_y,
+         legend = column_names[-month_column_index],
+         col = colours,
+         lty = 1, pch = point_shape,
+         bty = "n")
+  
+  # Add zero line if requested
+  if(add_zero_line){
+    lines(x=x_ticks, y=rep(0, length(months)), lty = 2)
   }
 }
