@@ -225,3 +225,61 @@ plot_values_by_month_static <- function(
   # Reset plotting margins
   par(mar = current_mar)
 }
+
+#' Plot values by month - interactive
+#'
+#' Given dataframe with months in one column and values in other column(s),
+#' this function will plot the values against the months using plotly
+#' @param data dataframe with month and value columns
+#' @param month_column column with months in. Defaults to "month"
+#' @param y_axis_label label for Y axis. Defaults to "£"
+#' @param title title for plot. Defaults to "Values by month"
+plot_values_by_month_interactive <- function(
+  data, month_column = "month", y_axis_label = "£",
+  title = "Values by month"
+){
+  
+  # Get months and month column index
+  column_names <- colnames(data)
+  month_column_index <- which(column_names == month_column)
+  months <- data[, month_column]
+  
+  # Define X axis ticks
+  x_ticks <- seq(0.5, length(months) - 0.5)
+  
+  # Create the initial plot
+  fig <- plot_ly(type = 'scatter', mode = 'lines')
+  
+  # Add X axis
+  fig <- layout(
+    fig,
+    xaxis = list(
+      ticktext = as.list(months), 
+      tickvals = as.list(x_ticks),
+      tickmode = "array"
+    )
+  )
+  
+  # Add title and Y axis label
+  fig <- layout(
+    fig, 
+    title = title,
+    yaxis = list(title = y_axis_label)
+  )
+  
+  # Add line for each set of values
+  for(column_index in seq_len(ncol(data))[-month_column_index]){
+    
+    fig <- add_trace(
+      fig,
+      x = x_ticks,
+      y = data[, column_index], 
+      name = column_names[column_index], 
+      mode = 'lines+markers',
+      hovertemplate = '<b>%{x}<b>: £%{y}'
+    )
+  }
+  
+  # Show the plot
+  fig
+}

@@ -2,7 +2,10 @@
 title: "Transaction coding"
 author: "Joseph Crispell"
 date: "`r format(Sys.time(), '%d-%m-%Y')`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -55,7 +58,7 @@ The following report summarises monthly bank transactions based upon a key word(
 
 The key word classification table  used for the current report is shown here with key word(s) for each type in the `Patterns` column separated by semi colons (`;`):
 ```{r types_table}
-datatable(transaction_types)
+datatable(transaction_types, rownames = FALSE))
 ```
 
 ```{r transactions_dates}
@@ -68,19 +71,6 @@ transactions[, date_column] <- as.Date(
 # Get date range
 transactions_dates <- range(transactions[, date_column])
 ```
-
-Bank transactions were provided for the from `r format(transactions_dates[1], "%B %Y")` to `r format(transactions_dates[1], "%B %Y")` drawing information from the following columns:
-
-- `r date_column` - column containing transaction date
-- `r description_column` - payment description column
-- `r in_column` - amount of money paid in
-- `r out_column` - amount of money paid out
-
-```{r transactions}
-datatable(transactions[, c(date_column, in_column, out_column, description_column)])
-```
-
-# Unclassified transactions
 
 ```{r process_transactions, include=FALSE}
 # Extract month from dates
@@ -96,6 +86,27 @@ transactions[, c("Type", "Pattern")] <-
     transaction_coding
   )
 ```
+
+Bank transactions were provided for the from `r format(transactions_dates[1], "%B %Y")` to `r format(transactions_dates[1], "%B %Y")` drawing information from the following columns:
+
+- ``r date_column`` - column containing transaction date
+- ``r description_column`` - payment description column
+- ``r in_column`` - amount of money paid in
+- ``r out_column`` - amount of money paid out
+
+With the following additional columns add based on the type classifications:
+
+- `Type` - transaction type classification
+- `Pattern` - pattern that matched for type classification
+
+```{r transactions}
+datatable(transactions[, c(date_column, in_column, 
+                           out_column, description_column,
+                           "Type", "Pattern")],
+          rownames = FALSE))
+```
+
+# Unclassified transactions
 
 ```{r unclassified, include=FALSE}
 
@@ -114,10 +125,10 @@ colnames(unique_descriptions) <- c("Description", "Number of transactions")
 Based on the above type classifications using key words, the following transaction descriptions didn't contain any key words:
 
 ```{r unclassified_counts}
-datatable(unique_descriptions)
+datatable(unique_descriptions, rownames = FALSE))
 ```
 
-# Average monthly earnings and costs
+# Average monthly earnings and costs {.tabset}
 
 ```{r monthly_totals, include=FALSE}
 # Calculate total pay and costs by month
@@ -141,15 +152,32 @@ average_savings <- totals_by_month[n_rows, "difference"]
 
 Without considering transaction type the average monthly earnings, costs, and savings are the following:
 
-- Earnings: £`r format(round(average_in, 0), big.mark=",")`
-- Costs: £`r format(round(average_out, 0), big.mark=",")`
-- Savings: £`r format(round(average_savings, 0), big.mark=",")`
+- Earnings: `£`r format(round(average_in, 0), big.mark=",")``
+- Costs: `£`r format(round(average_out, 0), big.mark=",")``
+- Savings: `£`r format(round(average_savings, 0), big.mark=",")``
 
 Here is how the above values vary by month:
+
+## Static
+
 ```{r plot_monthly_totals_static}
 plot_values_by_month_static(
   totals_by_month[-nrow(totals_by_month), ],
   title = "Total money in and out")
+```
+
+## Interactive
+
+```{r plot_monthly_totals_interactive}
+plot_values_by_month_interactive(
+  totals_by_month[-nrow(totals_by_month), ],
+  title = "Total money in and out")
+```
+
+## Data
+
+```{r monthly_totals_data}
+datatable(totals_by_month[-nrow(totals_by_month), ], rownames = FALSE))
 ```
 
 # Monthly earnings and costs by type
@@ -175,13 +203,44 @@ average_by_type <- summarise_transactions(
   FUN=mean,
   calculate_average = FALSE
 )
+average_by_type <- average_by_type[order(average_by_type$difference), ]
 ```
+
+## {.tabset}
 
 Considering the transaction type we can break down the monthly earnings, costs, and savings on average across the months considered:
 
+### Static
+
+```{r type_average_static}
+# Get and set plotting margins
+current_mar <- par()$mar
+par(mar=c(5.1, 8, 4.1, 2.1))
+
+# Plot the values
+barplot(
+  height = average_by_type$difference,
+  names = average_by_type$Type,
+  horiz = TRUE, las = 1, xlab = "£",
+  main = "Average value by type",
+  cex.names = 0.5
+)
+
+# Reset plotting margins
+par(mar=current_mar)
+```
+
+### Interactive
+
+### Data
+```{r type_average_data}
+datatable(average_by_type, rownames = FALSE)
+```
+
+## {.tabset}
 And by month:
 
-```{r type_by_month_static}
+```{r pivot_wider}
 # Get each types difference by month as column
 # Taken from: https://stackoverflow.com/questions/67778341/are-there-alternative-r-base-functions-to-pivot-wider
 totals_by_type_and_month$Type <- as.factor(totals_by_type_and_month$Type)
@@ -189,7 +248,10 @@ type_difference_by_month <- as.data.frame.matrix(
   xtabs(difference ~ month + Type, totals_by_type_and_month)
 )
 type_difference_by_month$month <- row.names(type_difference_by_month)
+```
 
+### Static
+```{r type_by_month_static}
 # Plot each type by month
 plot_values_by_month_static(
   type_difference_by_month,
@@ -197,3 +259,31 @@ plot_values_by_month_static(
   legend_cex = 0.45)
 ```
 
+### Interactive
+```{r type_by_month_interactive}
+# Plot each type by month
+plot_values_by_month_interactive(
+  type_difference_by_month,
+  title = "Money in/out by type"
+)
+```
+
+### Data
+```{r type_by_month_data}
+# Plot each type by month
+datatable(
+  type_difference_by_month,
+  extensions = 'FixedColumns',
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    fixedColumns = list(leftColumns = 1)
+  )
+)
+```
+
+<!-- TO DO:
+- Add data behind charts as tab
+- Add interactive version of each chart as tab
+- Download more months from bank of scotland
+-->
