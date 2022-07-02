@@ -58,7 +58,7 @@ The following report summarises monthly bank transactions based upon a key word(
 
 The key word classification table  used for the current report is shown here with key word(s) for each type in the `Patterns` column separated by semi colons (`;`):
 ```{r types_table}
-datatable(transaction_types, rownames = FALSE))
+datatable(transaction_types, rownames = FALSE)
 ```
 
 ```{r transactions_dates}
@@ -103,7 +103,7 @@ With the following additional columns add based on the type classifications:
 datatable(transactions[, c(date_column, in_column, 
                            out_column, description_column,
                            "Type", "Pattern")],
-          rownames = FALSE))
+          rownames = FALSE)
 ```
 
 # Unclassified transactions
@@ -125,7 +125,7 @@ colnames(unique_descriptions) <- c("Description", "Number of transactions")
 Based on the above type classifications using key words, the following transaction descriptions didn't contain any key words:
 
 ```{r unclassified_counts}
-datatable(unique_descriptions, rownames = FALSE))
+datatable(unique_descriptions, rownames = FALSE)
 ```
 
 # Average monthly earnings and costs {.tabset}
@@ -177,7 +177,7 @@ plot_values_by_month_interactive(
 ## Data
 
 ```{r monthly_totals_data}
-datatable(totals_by_month[-nrow(totals_by_month), ], rownames = FALSE))
+datatable(totals_by_month[-nrow(totals_by_month), ], rownames = FALSE)
 ```
 
 # Monthly earnings and costs by type
@@ -231,6 +231,29 @@ par(mar=current_mar)
 ```
 
 ### Interactive
+```{r type_average_interactive}
+
+# Create the bar chart
+fig <- plot_ly(
+  x = average_by_type$difference, 
+  y = average_by_type$Type, 
+  type = 'bar', orientation = 'h',
+  hovertemplate = '<b>%{y}<b>: £%{x}',
+  name = ""
+)
+
+# Add title, x axis label, order names and set size
+fig <- layout(
+  fig, 
+  title = "Average value by type",
+  xaxis = list(title = "£"),
+  yaxis = list(tickfont = list(size = 10),
+               categoryorder = "total ascending")
+)
+
+# Show the plot
+fig
+```
 
 ### Data
 ```{r type_average_data}
@@ -270,7 +293,15 @@ plot_values_by_month_interactive(
 
 ### Data
 ```{r type_by_month_data}
-# Plot each type by month
+
+# Add months as column at start rather than just row names
+type_difference_by_month <- cbind(
+  rownames(type_difference_by_month),
+  type_difference_by_month
+)
+colnames(type_difference_by_month)[1] <- "month"
+
+# Show data
 datatable(
   type_difference_by_month,
   extensions = 'FixedColumns',
@@ -278,7 +309,8 @@ datatable(
     dom = 't',
     scrollX = TRUE,
     fixedColumns = list(leftColumns = 1)
-  )
+  ),
+  rownames = FALSE
 )
 ```
 
