@@ -120,46 +120,23 @@ Considering the transaction type we can break down the monthly earnings, costs, 
 ### Static
 
 ```{r type_average_static}
-# Get and set plotting margins
-current_mar <- par()$mar
-par(mar=c(5.1, 8, 4.1, 2.1))
-
 # Plot the values
-barplot(
-  height = average_by_type$difference,
+plot_values_bar_chart_static(
+  values = average_by_type$difference,
   names = average_by_type$Type,
-  horiz = TRUE, las = 1, xlab = "£",
   main = "Average value by type",
   cex.names = 0.5
 )
-
-# Reset plotting margins
-par(mar=current_mar)
 ```
 
 ### Interactive
 ```{r type_average_interactive}
-
 # Create the bar chart
-fig <- plot_ly(
-  x = average_by_type$difference, 
-  y = average_by_type$Type, 
-  type = 'bar', orientation = 'h',
-  hovertemplate = '<b>%{y}<b>: £%{x}',
-  name = ""
+plot_values_bar_chart_interactive(
+  values = average_by_type$difference, 
+  names = average_by_type$Type,
+  title = "Average value by type"
 )
-
-# Add title, x axis label, order names and set size
-fig <- layout(
-  fig, 
-  title = "Average value by type",
-  xaxis = list(title = "£"),
-  yaxis = list(tickfont = list(size = 10),
-               categoryorder = "total ascending")
-)
-
-# Show the plot
-fig
 ```
 
 ### Data

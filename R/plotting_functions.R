@@ -123,3 +123,56 @@ plot_values_by_month_interactive <- function(
   # Show the plot
   fig
 }
+
+#' Plot horizontal bar chart of values (prices)
+#'
+#' Creates horizontal bar chart of values
+#' @param values values (length) for each bar
+#' @param names names for each bar
+#' @param ... additional parameters to pass to barplot()
+plot_values_bar_chart_static <- function(values, names, ...){
+  
+  # Get and set plotting margins
+  current_mar <- par()$mar
+  par(mar=c(5.1, 8, 4.1, 2.1))
+
+  # Plot the values
+  barplot(
+    height = average_by_type$difference,
+    names = average_by_type$Type,
+    horiz = TRUE, las = 1, xlab = "£", ...
+  )
+
+  # Reset plotting margins
+  par(mar=current_mar)
+}
+
+#' Plot horizontal bar chart of values (prices)
+#'
+#' Creates horizontal bar chart of values using plotly
+#' @param values values (length) for each bar
+#' @param names names for each bar
+#' @param title title for plot
+plot_values_bar_chart_interactive <- function(values, names, title, ...){
+  
+  # Create the bar chart
+  fig <- plot_ly(
+    x = values, 
+    y = names, 
+    type = 'bar', orientation = 'h',
+    hovertemplate = '<b>%{y}<b>: £%{x}',
+    name = ""
+  )
+  
+  # Add title, x axis label, order names and set size
+  fig <- layout(
+    fig, 
+    title = title,
+    xaxis = list(title = "£"),
+    yaxis = list(tickfont = list(size = 10),
+                 categoryorder = "total ascending")
+  )
+  
+  # Show the plot
+  fig
+}
