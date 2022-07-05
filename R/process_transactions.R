@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = FALSE)
 # Check if current script being sourced for building report
 if(exists("building_report") == FALSE){
   
+  # Set working directory to current script location
+  setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+  
   # Note data folder
   data_folder <- file.path("..", "data")
   
