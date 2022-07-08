@@ -63,7 +63,7 @@ transactions_dates <- range(transactions[, date_column])
 transactions$month <- format(transactions[, date_column], "%m/%Y")
 
 # Convert descriptions to lowercase
-transactions[, description_column] <- tolower(transactions[, description_column])
+transactions[, description_column] <- clean_strings(transactions[, description_column])
 
 # Classify transactions based on key words
 transactions[, c("Type", "Pattern")] <-  
@@ -74,16 +74,12 @@ transactions[, c("Type", "Pattern")] <-
 
 #### Identify unclassified transactions ####
 
-# Identify unclassified transactions
-unclassified <- transactions[transactions$Type == "Unclassified", ]
-
-# Identify standing orders/direct debits?
-unique_descriptions <- table(unclassified[, description_column])
-unique_descriptions <- unique_descriptions[order(unique_descriptions, decreasing = TRUE)]
-
-# Convert to dataframe
-unique_descriptions <- as.data.frame(unique_descriptions)
-colnames(unique_descriptions) <- c("Description", "Number of transactions")
+# Summarise unclassified transactions
+summary_of_unclassifieds <- identify_and_summarise_unclassified_transactions(
+  transactions,
+  in_column, 
+  out_column
+)
 
 #### Calculate monthly statistics ####
 

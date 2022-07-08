@@ -1,3 +1,91 @@
+
+#' Remove weird characters from strings
+#'
+#' Removes any hidden characters or non-alphanumeric characters from strings
+#' @param strings vector of character strings
+#' @return Returns strings without hidden characters or non-alphanumeric characters
+clean_strings <- function(strings){
+  
+  cleaned_strings <- sapply(
+    strings,
+    FUN = function(string){
+      
+      # Removed escaped characters
+      string <- gsub(
+        pattern = "\n|\t", 
+        replacement = "",
+        x = string
+      )
+      
+      # Replace any non alphabet/numbers
+      string <- gsub(
+        pattern = "[^[:alnum:]]", 
+        replacement = " ", 
+        x = string
+      )
+      
+      # Convert to lowercase
+      string <- tolower(string)
+      
+      return(string)
+    }
+  )
+
+  return(cleaned_strings)
+}
+
+#' Finds and summarises transactions that couldn't be classified
+#'
+#' Given transactions dataframe with "Type" column indicating whether classified.
+#' This function finds unclassified transactions, sums and counts them.
+#' Note, should have run classify_transactions on transactions dataframe
+#' before using this function!
+#' @param transactions dataframe containing transaction details
+#' @param in_column name of column in transactions dataframe containing money going in (credit)
+#' @param out_column name of column in transactions dataframe containing money going out (debit)
+#' @return Returns dataframe of unique transaction description, their cost and number of appearances
+identify_and_summarise_unclassified_transactions <- function(transactions, in_column, out_column){
+  
+  # Identify unclassified transactions
+  unclassified <- transactions[transactions$Type == "Unclassified", ]
+  
+  # Add cost column
+  unclassified[is.na(unclassified[, in_column]), in_column] <- 0
+  unclassified[is.na(unclassified[, out_column]), out_column] <- 0
+  unclassified$cost <- unclassified[, in_column] - unclassified[, out_column]
+  
+  # Identify standing orders/direct debits?
+  unique_descriptions <- do.call(
+    data.frame,
+    aggregate(
+      unclassified$cost,
+      by = list(unclassified[, description_column]),
+      FUN = function(values){
+        
+        # Calculate sum
+        sum <- sum(values, na.rm = TRUE)
+        
+        # Count number of values
+        count <- length(values)
+        
+        return(c("sum" = sum, "count" = count))
+      }
+    )
+  )
+  colnames(unique_descriptions) <- c("Description", "Total cost", "Number of transactions")
+  
+  # Order by cost and then count
+  unique_descriptions <- unique_descriptions[
+    order(
+      unique_descriptions$`Total cost`,
+      unique_descriptions$`Number of transactions`, 
+      decreasing = c(FALSE, TRUE)
+    ),
+  ]
+  
+  return(unique_descriptions)
+}
+
 #' Build transaction classifications from dataframe
 #'
 #' Given dataframe of transaction types and delimited patterns this 
@@ -23,7 +111,14 @@ build_transaction_coding_dictionary <- function(transactions_coding_df, delimite
   transaction_coding_list <- lapply(
     transactions_coding_df$Patterns,
     FUN=function(delimited_patterns, delimiter){
-      unlist(strsplit(delimited_patterns, split = delimiter))
+      
+      # Extract patterns
+      patterns <- unlist(strsplit(delimited_patterns, split = delimiter))
+      
+      # Clean them up
+      patterns <- clean_strings(patterns)
+      
+      return(patterns)
     },
     delimiter
   )
@@ -72,7 +167,7 @@ classify_transaction <- function(description, transaction_coding){
 #'
 #' Classifies types for transaction descriptions type using a key word dictionary
 #' (list) describing key words (patterns) for different transaction types
-#' @param description string description of transaction
+#' @param descriptions vector of string description of transactions
 #' @param transaction_coding list of pattern vectors defining transaction types
 #' @return Returns of named vector with transaction type and pattern that matched
 classify_transactions <- function(descriptions, transaction_coding){

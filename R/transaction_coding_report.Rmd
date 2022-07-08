@@ -76,7 +76,7 @@ datatable(transactions[, c(date_column, in_column,
 Based on the above type classifications using key words, the following transaction descriptions didn't contain any key words:
 
 ```{r unclassified_counts}
-datatable(unique_descriptions, rownames = FALSE)
+datatable(summary_of_unclassifieds, rownames = FALSE)
 ```
 
 # Average monthly earnings and costs {.tabset}
