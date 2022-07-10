@@ -152,3 +152,40 @@ generate_transaction_dates <- function(
   # Return selected date series
   return(date_series[[frequency]])
 }
+
+#' Write transaction type info to file
+#'
+#' @param file_path path and name of file to write transaction types info to
+#' @param transaction_types a list with details for each transaction type expected
+write_transaction_types <- function(file_path, transaction_types){
+  
+  # Initialise transaction type dataframe
+  transaction_types_dataframe <- data.frame(
+    "Type" = names(transaction_types),
+    "Patterns" = names(transaction_types)
+  )
+  
+  # Add patterns, where available
+  transaction_types_dataframe$Patterns <- sapply(
+    seq_along(transaction_types),
+    FUN = function(index, transaction_types){
+      
+      # Get transaction types
+      types <- names(transaction_types)
+      
+      # Get patterns for current transaction type
+      patterns <- transaction_types[[index]]$patterns
+      
+      # Return concatenate string of patterns
+      return(ifelse(is.null(patterns), types[index], paste(patterns, collapse = ";")))
+    },
+    transaction_types
+  )
+  
+  # Write transaction type dataframe to file
+  write.csv(
+    transaction_types_dataframe, 
+    file = file_path,
+    row.names = TRUE
+  )
+}

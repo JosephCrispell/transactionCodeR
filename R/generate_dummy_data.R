@@ -25,7 +25,10 @@ transaction_types <- list(
 
 #### Write out transaction coding/types dictionary ####
 
-ADD SOMETHING HERE!
+write_transaction_types(
+  file_path = file.path(data_folder, "dummy_transaction_coding_dictionary.csv"),
+  transaction_types = transaction_types
+)
 
 #### Generate transactions ####
 
