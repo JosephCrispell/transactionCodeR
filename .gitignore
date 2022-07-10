@@ -2,6 +2,9 @@
 data/*
 !data/README.md
 
+# Ignore script with setup info in
+R/setup.R
+
 # Ignore any reports
 *.html
 
