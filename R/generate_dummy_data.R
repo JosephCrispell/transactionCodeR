@@ -43,5 +43,5 @@ dummy_transactions <- generate_transactions(
 write.csv(
   dummy_transactions, 
   file = file.path(data_folder, "dummy_transactions.csv"),
-  row.names = TRUE
+  row.names = FALSE
 )

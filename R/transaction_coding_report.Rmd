@@ -6,6 +6,9 @@ output:
   html_document:
     toc: true
     toc_float: true
+params:
+  transactions_file: "dummy_transactions.csv"
+  transaction_coding_file: "dummy_transaction_coding_dictionary.csv"
 ---
 
 ```{r setup, include=FALSE}
@@ -21,15 +24,15 @@ knitr::opts_chunk$set(echo = FALSE)
 data_folder <- file.path("..", "data")
 
 # Note key parameters
-date_column <- "Transaction Date"
-date_format <- "%d/%m/%Y"
-description_column <- "Transaction Description"
-in_column <- "Credit Amount"
-out_column <- "Debit Amount"
+date_column <- "Date"
+date_format <- "%Y-%m-%d"
+description_column <- "Description"
+in_column <- "In"
+out_column <- "Out"
 
 # Note input files
-transactions_file <- file.path(data_folder, "transactions_Jan-Jul-2022.csv")
-coding_file <- file.path(data_folder, "transaction_coding_dictionary.csv")
+transactions_file <- file.path(data_folder, params$transactions_file)
+transaction_coding_file <- file.path(data_folder, params$transaction_coding_file)
 
 # Note building report
 building_report <- TRUE

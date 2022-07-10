@@ -18,15 +18,15 @@ if(exists("building_report") == FALSE){
   data_folder <- file.path("..", "data")
   
   # Note key parameters
-  date_column <- "Transaction Date"
-  date_format <- "%d/%m/%Y"
-  description_column <- "Transaction Description"
-  in_column <- "Credit Amount"
-  out_column <- "Debit Amount"
+  date_column <- "Date"
+  date_format <- "%Y-%m-%d"
+  description_column <- "Description"
+  in_column <- "In"
+  out_column <- "Out"
   
   # Note input files
-  transactions_file <- file.path(data_folder, "14279266_20225002_0707.csv")
-  coding_file <- file.path(data_folder, "transaction_coding_dictionary.csv")
+  transactions_file <- file.path(data_folder, "dummy_transactions.csv")
+  transaction_coding_file <- file.path(data_folder, "dummy_transaction_coding_dictionary.csv")
 }
 
 # Source functions
@@ -43,7 +43,7 @@ transactions <- read.csv(
 
 # Load transaction coding dictionary
 transaction_types <- read.csv(
-  coding_file,
+  transaction_coding_file,
   stringsAsFactors = FALSE
 )
 transaction_coding <- build_transaction_coding_dictionary(transaction_types)

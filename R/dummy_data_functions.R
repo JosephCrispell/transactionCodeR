@@ -186,6 +186,6 @@ write_transaction_types <- function(file_path, transaction_types){
   write.csv(
     transaction_types_dataframe, 
     file = file_path,
-    row.names = TRUE
+    row.names = FALSE
   )
 }
