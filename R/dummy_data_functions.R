@@ -13,20 +13,21 @@ generate_transactions <- function(start_date, end_date, transaction_types){
   full_transactions <- NULL
   
   # Examine each transaction type
-  for(transaction_type in names(transaction_types)){
+  for(transaction_name in names(transaction_types)){
     
     # Generate transactions
     current_transactions <- generate_transactions_for_type(
-      average_value = transaction_types[[transaction_type]]$average_value,
-      type = transaction_type,
-      frequency = transaction_types[[transaction_type]]$frequency,
+      average_value = transaction_types[[transaction_name]]$average_value,
+      name = transaction_name,
+      type = transaction_types[[transaction_name]]$type,
+      frequency = transaction_types[[transaction_name]]$frequency,
       start_date = start_date, 
       end_date = end_date,
-      random_n_per_month = transaction_types[[transaction_type]]$n_per_month,
-      standard_deviation = transaction_types[[transaction_type]]$standard_deviation,
-      day_of_month = transaction_types[[transaction_type]]$day_of_month,
-      day_of_week = transaction_types[[transaction_type]]$day_of_week,
-      patterns = transaction_types[[transaction_type]]$patterns
+      random_n_per_month = transaction_types[[transaction_name]]$n_per_month,
+      standard_deviation = transaction_types[[transaction_name]]$standard_deviation,
+      day_of_month = transaction_types[[transaction_name]]$day_of_month,
+      day_of_week = transaction_types[[transaction_name]]$day_of_week,
+      patterns = transaction_types[[transaction_name]]$patterns
     )
     
     # Combine with growing table
@@ -52,7 +53,8 @@ generate_transactions <- function(start_date, end_date, transaction_types){
 #' Given information about transaction type, this function will generate random
 #' transactions across time period for that type
 #' @param average_value average value for type
-#' @param type name of transaction type
+#' @param name name of transaction
+#' @param type type of transaction ("in" (credit), or "out" (debit))
 #' @param frequency frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random")
 #' @param start_date Date object for start date
 #' @param end_date Date object for end date
@@ -63,7 +65,7 @@ generate_transactions <- function(start_date, end_date, transaction_types){
 #' @param patterns patterns to use as transaction descriptions. Defaults to type parameter.
 #' @return a dataframe of random transactions matching details of transaction type
 generate_transactions_for_type <- function(
-  average_value, type, frequency,
+  average_value, name, type, frequency,
   start_date, end_date,
   random_n_per_month = NULL,
   standard_deviation = NULL,
@@ -77,7 +79,7 @@ generate_transactions_for_type <- function(
   standard_deviation <- ifelse(is.null(standard_deviation), abs(0.1*average_value), standard_deviation)
   day_of_month <- ifelse(is.null(day_of_month), 1, day_of_month)
   day_of_week <- ifelse(is.null(day_of_week), 1, day_of_week)
-  patterns <- ifelse(is.null(patterns), type, patterns)
+  patterns <- ifelse(is.null(patterns), name, patterns)
   
   # Generate transaction dates
   dates <- generate_transaction_dates(
@@ -94,10 +96,12 @@ generate_transactions_for_type <- function(
     "In" = NA,
     "Out" = NA
   )
-  if(average_value > 0){
+  if(type == "in"){
     transactions$In <- values
-  }else{
+  }else if(type == "out"){
     transactions$Out <- values
+  }else{
+    stop(paste0("Error! Transaction type (", type, ") note recognised! Should be either \"in\" or \"out\"."))
   }
   
   return(transactions)

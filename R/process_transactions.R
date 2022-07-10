@@ -93,7 +93,7 @@ totals_by_month <- summarise_transactions(
 )
 
 # Make debit column negative
-totals_by_month$`Debit Amount` <- -totals_by_month$`Debit Amount`
+totals_by_month[, out_column] <- -totals_by_month[, out_column]
 
 # Note average stats
 n_rows <- nrow(totals_by_month)
@@ -133,3 +133,4 @@ type_difference_by_month <- as.data.frame.matrix(
 )
 type_difference_by_month$month <- row.names(type_difference_by_month)
 type_difference_by_month <- order_by_month(type_difference_by_month)
+
