@@ -62,7 +62,7 @@ transactions_dates <- range(transactions[, date_column])
 # Extract month from dates
 transactions$month <- format(transactions[, date_column], "%m/%Y")
 
-# Convert descriptions to lowercase
+# Clean up transaction descriptions
 transactions[, description_column] <- clean_strings(transactions[, description_column])
 
 # Classify transactions based on key words

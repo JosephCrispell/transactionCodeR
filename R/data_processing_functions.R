@@ -54,6 +54,20 @@ identify_and_summarise_unclassified_transactions <- function(transactions, in_co
   unclassified[is.na(unclassified[, out_column]), out_column] <- 0
   unclassified$cost <- unclassified[, in_column] - unclassified[, out_column]
   
+  # Initialise data frame to store information about unclassified
+  column_names <- c("Description", "Total cost", "Number of transactions")
+  unique_descriptions <- data.frame(
+    matrix(
+      ncol = 3, nrow = 0, 
+      dimnames = list(NULL, column_names)
+    )
+  )
+  
+  # Finish if no unclassifieds found
+  if(nrow(unclassified) == 0){
+    return(unique_descriptions)
+  }
+  
   # Identify standing orders/direct debits?
   unique_descriptions <- do.call(
     data.frame,
@@ -72,7 +86,7 @@ identify_and_summarise_unclassified_transactions <- function(transactions, in_co
       }
     )
   )
-  colnames(unique_descriptions) <- c("Description", "Total cost", "Number of transactions")
+  colnames(unique_descriptions) <- column_names
   
   # Order by cost and then count
   unique_descriptions <- unique_descriptions[
