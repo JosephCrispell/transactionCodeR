@@ -1,3 +1,12 @@
+#' Generate random transactions based on transaction types
+#'
+#' Given a list providing information about different transaction types
+#' this function will generate random transactions for each type across
+#' a set time period
+#' @param start_date Date object for start date
+#' @param end_date Date object for end date
+#' @param transaction_types a list with details for each transaction type expected
+#' @return a dataframe of random transactions matching details of each type of transaction
 generate_transactions <- function(start_date, end_date, transaction_types){
   
   # Build a dataframe to store transactions
@@ -37,8 +46,22 @@ generate_transactions <- function(start_date, end_date, transaction_types){
   return(full_transactions)
 }
 
+#' Generate random transactions of a particular type
+#'
+#' Given information about transaction type, this function will generate random
+#' transactions across time period for that type
+#' @param average_value average value for type
+#' @param type name of transaction type
+#' @param frequency frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random")
+#' @param start_date Date object for start date
+#' @param end_date Date object for end date
+#' @param random_n_per_month if random frequency, on average how many transactions per month. Defaults to 4.
+#' @param standard_deviation standard deviation from average value for transaction. Defaults to 10% of value.
+#' @param day_of_month if monthly, which day of month. Defaults to 1 (first day).
+#' @param day_of_week if weekly, which day of week. Defaults to 1 (first day).
+#' @return a dataframe of random transactions matching details of transaction type
 generate_transactions_for_type <- function(
-  value, type, frequency,
+  average_value, type, frequency,
   start_date, end_date,
   random_n_per_month = NULL,
   standard_deviation = NULL,
@@ -46,9 +69,9 @@ generate_transactions_for_type <- function(
   day_of_week = NULL
 ){
   
-  # Set default values for couple of variables
+  # Set default values for some variables
   random_n_per_month <- ifelse(is.null(random_n_per_month), 4, random_n_per_month)
-  standard_deviation <- ifelse(is.null(standard_deviation), abs(0.1*value), standard_deviation)
+  standard_deviation <- ifelse(is.null(standard_deviation), abs(0.1*average_value), standard_deviation)
   day_of_month <- ifelse(is.null(day_of_month), 1, day_of_month)
   day_of_week <- ifelse(is.null(day_of_week), 1, day_of_week)
   
@@ -58,19 +81,30 @@ generate_transactions_for_type <- function(
   )
   
   # Generate the transaction values
-  values <- rnorm(length(dates), mean = value, sd = standard_deviation)
+  values <- rnorm(length(dates), mean = average_value, sd = standard_deviation)
   
   # Store in dataframe
   transactions <- data.frame(
     "Date" = dates,
-    "In" = ifelse(value > 0, values, NA),
-    "Out" = ifelse(value < 0, values, NA),
+    "In" = ifelse(average_value > 0, values, NA),
+    "Out" = ifelse(average_value < 0, values, NA),
     "Description" = type
   )
   
   return(transactions)
 }
 
+#' Generate random dates for transactions
+#'
+#' Given start and end date for period and frequency of transaction this function
+#' provides dates for the transactions.
+#' @param start_date Date object for start date
+#' @param end_date Date object for end date
+#' @param frequency frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random")
+#' @param random_n_per_month if random frequency, on average how many transactions per month. Defaults to 4.
+#' @param day_of_month if monthly, which day of month. Defaults to 1 (first day).
+#' @param day_of_week if weekly, which day of week. Defaults to 1 (first day).
+#' @return vector of dates for transactions
 generate_transaction_dates <- function(
   start_date, end_date, frequency, 
   random_n_per_month = 4,
