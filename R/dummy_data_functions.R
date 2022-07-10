@@ -79,7 +79,9 @@ generate_transactions_for_type <- function(
   standard_deviation <- ifelse(is.null(standard_deviation), abs(0.1*average_value), standard_deviation)
   day_of_month <- ifelse(is.null(day_of_month), 1, day_of_month)
   day_of_week <- ifelse(is.null(day_of_week), 1, day_of_week)
-  patterns <- ifelse(is.null(patterns), name, patterns)
+  if(is.null(patterns)){
+    patterns <- name
+  }
   
   # Generate transaction dates
   dates <- generate_transaction_dates(
