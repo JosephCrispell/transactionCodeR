@@ -28,7 +28,7 @@ in_column <- "Credit Amount"
 out_column <- "Debit Amount"
 
 # Note input files
-transactions_file <- file.path(data_folder, "14279266_20225002_0707.csv")
+transactions_file <- file.path(data_folder, "transactions_Jan-Jul-2022.csv")
 coding_file <- file.path(data_folder, "transaction_coding_dictionary.csv")
 
 # Note building report
