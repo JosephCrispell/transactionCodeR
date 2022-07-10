@@ -17,7 +17,7 @@ generate_transactions <- function(start_date, end_date, transaction_types){
     
     # Generate transactions
     current_transactions <- generate_transactions_for_type(
-      value = transaction_types[[transaction_type]]$average_value,
+      average_value = transaction_types[[transaction_type]]$average_value,
       type = transaction_type,
       frequency = transaction_types[[transaction_type]]$frequency,
       start_date = start_date, 
@@ -25,7 +25,8 @@ generate_transactions <- function(start_date, end_date, transaction_types){
       random_n_per_month = transaction_types[[transaction_type]]$n_per_month,
       standard_deviation = transaction_types[[transaction_type]]$standard_deviation,
       day_of_month = transaction_types[[transaction_type]]$day_of_month,
-      day_of_week = transaction_types[[transaction_type]]$day_of_week
+      day_of_week = transaction_types[[transaction_type]]$day_of_week,
+      patterns = transaction_types[[transaction_type]]$patterns
     )
     
     # Combine with growing table
@@ -59,6 +60,7 @@ generate_transactions <- function(start_date, end_date, transaction_types){
 #' @param standard_deviation standard deviation from average value for transaction. Defaults to 10% of value.
 #' @param day_of_month if monthly, which day of month. Defaults to 1 (first day).
 #' @param day_of_week if weekly, which day of week. Defaults to 1 (first day).
+#' @param patterns patterns to use as transaction descriptions. Defaults to type parameter.
 #' @return a dataframe of random transactions matching details of transaction type
 generate_transactions_for_type <- function(
   average_value, type, frequency,
@@ -66,14 +68,16 @@ generate_transactions_for_type <- function(
   random_n_per_month = NULL,
   standard_deviation = NULL,
   day_of_month = NULL,
-  day_of_week = NULL
+  day_of_week = NULL,
+  patterns = NULL
 ){
   
-  # Set default values for some variables
+  # Set default values for optional variables
   random_n_per_month <- ifelse(is.null(random_n_per_month), 4, random_n_per_month)
   standard_deviation <- ifelse(is.null(standard_deviation), abs(0.1*average_value), standard_deviation)
   day_of_month <- ifelse(is.null(day_of_month), 1, day_of_month)
   day_of_week <- ifelse(is.null(day_of_week), 1, day_of_week)
+  patterns <- ifelse(is.null(patterns), type, patterns)
   
   # Generate transaction dates
   dates <- generate_transaction_dates(
@@ -86,10 +90,15 @@ generate_transactions_for_type <- function(
   # Store in dataframe
   transactions <- data.frame(
     "Date" = dates,
-    "In" = ifelse(average_value > 0, values, NA),
-    "Out" = ifelse(average_value < 0, values, NA),
-    "Description" = type
+    "Description" = sample(patterns, size = length(dates), replace = TRUE),
+    "In" = NA,
+    "Out" = NA
   )
+  if(average_value > 0){
+    transactions$In <- values
+  }else{
+    transactions$Out <- values
+  }
   
   return(transactions)
 }
@@ -133,7 +142,7 @@ generate_transaction_dates <- function(
     date_series[["daily"]][weekdays(date_series[["daily"]]) %in% c("Saturday", "Sunday") == FALSE]
   date_series[["random"]] <- sample(
     date_series[["daily"]],
-    size = length(monthly) * random_n_per_month
+    size = length(date_series[["monthly"]]) * random_n_per_month
   )
   
   # Change monthly/weekly series based on day of month/week
