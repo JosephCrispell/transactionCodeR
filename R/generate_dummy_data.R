@@ -13,24 +13,43 @@ data_folder <- file.path("..", "data")
 start_date <- as.Date("01-01-2022", format = "%d-%m-%Y")
 end_date <- as.Date("30-06-2022", format = "%d-%m-%Y")
 transaction_types <- list(
-  "Salary"=list("average_value"=1200, "type" = "in", "frequency"="monthly", "day_of_month" = 5),
-  "Food"=list("average_value"=20, "type" = "out", "frequency"="random", "n_per_month" = 4,
-              "patterns" = c("supermarket", "market", "corner shop")),
-  "Travel"=list("average_value"=5, "type" = "out", "frequency"="weekdays",
-                "patterns" = c("train", "bus", "car")),
-  "Bills"=list("average_value"=150, "type" = "out", "frequency"="monthly", "standard_deviation" = 0),
-  "Subscriptions"=list("average_value"=45, "type" = "out", "frequency"="monthly", "standard_deviation" = 0,
-                       "patterns" = c("films", "music")),
-  "Rent"=list("average_value"=300, "type" = "out", "frequency"="monthly", "standard_deviation" = 0)
+  "Salary" = list(
+    "average_value" = 1200, "type" = "in",
+    "frequency" = "monthly", "day_of_month" = 5
+  ),
+  "Food" = list(
+    "average_value" = 20, "type" = "out", "frequency" = "random",
+    "n_per_month" = 4,
+    "patterns" = c("supermarket", "market", "corner shop")
+  ),
+  "Travel" = list(
+    "average_value" = 5, "type" = "out", "frequency" = "weekdays",
+    "patterns" = c("train", "bus", "car")
+  ),
+  "Bills" = list(
+    "average_value" = 150, "type" = "out",
+    "frequency" = "monthly", "standard_deviation" = 0
+  ),
+  "Subscriptions" = list(
+    "average_value" = 45, "type" = "out", "frequency" = "monthly",
+    "standard_deviation" = 0, "patterns" = c("films", "music")
+  ),
+  "Rent" = list(
+    "average_value" = 300, "type" = "out",
+    "frequency" = "monthly", "standard_deviation" = 0
+  )
 )
 
 #### Write out transaction coding/types dictionary ####
 
-#TODO check transaction type info
+# TODO check transaction type info
 
 # Write transaction types to file
 write_transaction_types(
-  file_path = file.path(data_folder, "dummy_transaction_coding_dictionary.csv"),
+  file_path = file.path(
+    data_folder,
+    "dummy_transaction_coding_dictionary.csv"
+  ),
   transaction_types = transaction_types
 )
 
@@ -45,7 +64,7 @@ dummy_transactions <- generate_transactions(
 
 # Save in data folder
 write.csv(
-  dummy_transactions, 
+  dummy_transactions,
   file = file.path(data_folder, "dummy_transactions.csv"),
   row.names = FALSE
 )

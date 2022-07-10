@@ -32,7 +32,10 @@ out_column <- "Out"
 
 # Note input files
 transactions_file <- file.path(data_folder, params$transactions_file)
-transaction_coding_file <- file.path(data_folder, params$transaction_coding_file)
+transaction_coding_file <- file.path(
+  data_folder,
+  params$transaction_coding_file
+)
 
 # Note building report
 building_report <- TRUE
@@ -42,7 +45,8 @@ source("plotting_functions.R")
 ```
 
 ```{r data_processing, include = FALSE}
-# Run the data analysis - note the variables set in setup chunk will be carried through
+# Run the data analysis - note the variables set in setup chunk will
+# be carried through
 source("process_transactions.R")
 ```
 
@@ -68,10 +72,13 @@ With the following additional columns add based on the type classifications:
 - `Pattern` - pattern that matched for type classification
 
 ```{r transactions}
-datatable(transactions[, c(date_column, in_column, 
-                           out_column, description_column,
-                           "Type", "Pattern")],
-          rownames = FALSE)
+datatable(transactions[, c(
+  date_column, in_column,
+  out_column, description_column,
+  "Type", "Pattern"
+)],
+rownames = FALSE
+)
 ```
 
 # Unclassified transactions
@@ -95,17 +102,19 @@ Here is how the above values vary by month:
 ## Static
 
 ```{r plot_monthly_totals_static}
-plot_values_by_month_static(
+plot_values_by_month(
   totals_by_month[-nrow(totals_by_month), ],
-  title = "Total money in and out")
+  title = "Total money in and out"
+)
 ```
 
 ## Interactive
 
 ```{r plot_monthly_totals_interactive}
-plot_values_by_month_interactive(
+plotly_values_by_month(
   totals_by_month[-nrow(totals_by_month), ],
-  title = "Total money in and out")
+  title = "Total money in and out"
+)
 ```
 
 ## Data
@@ -124,7 +133,7 @@ Considering the transaction type we can break down the monthly earnings, costs, 
 
 ```{r type_average_static}
 # Plot the values
-plot_values_bar_chart_static(
+plot_values_bar_chart(
   values = average_by_type$difference,
   names = average_by_type$Type,
   main = "Average value by type",
@@ -135,8 +144,8 @@ plot_values_bar_chart_static(
 ### Interactive
 ```{r type_average_interactive}
 # Create the bar chart
-plot_values_bar_chart_interactive(
-  values = average_by_type$difference, 
+plotly_values_bar_chart(
+  values = average_by_type$difference,
   names = average_by_type$Type,
   title = "Average value by type"
 )
@@ -153,16 +162,17 @@ And by month:
 ### Static
 ```{r type_by_month_static}
 # Plot each type by month
-plot_values_by_month_static(
+plot_values_by_month(
   type_difference_by_month,
   title = "Money in/out by type",
-  legend_cex = 0.45)
+  legend_cex = 0.45
+)
 ```
 
 ### Interactive
 ```{r type_by_month_interactive}
 # Plot each type by month
-plot_values_by_month_interactive(
+plotly_values_by_month(
   type_difference_by_month,
   title = "Money in/out by type"
 )
@@ -180,9 +190,9 @@ colnames(type_difference_by_month)[1] <- "month"
 # Show data
 datatable(
   type_difference_by_month,
-  extensions = 'FixedColumns',
+  extensions = "FixedColumns",
   options = list(
-    dom = 't',
+    dom = "t",
     scrollX = TRUE,
     fixedColumns = list(leftColumns = 1)
   ),

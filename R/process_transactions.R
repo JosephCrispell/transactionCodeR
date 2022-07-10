@@ -9,24 +9,25 @@ library(plotly) # interactive graphics
 knitr::opts_chunk$set(echo = FALSE)
 
 # Check if current script being sourced for building report
-if(exists("building_report") == FALSE){
-  
+if (exists("building_report") == FALSE) {
+
   # Set working directory to current script location
   setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-  
+
   # Note data folder
   data_folder <- file.path("..", "data")
-  
+
   # Note key parameters
   date_column <- "Date"
   date_format <- "%Y-%m-%d"
   description_column <- "Description"
   in_column <- "In"
   out_column <- "Out"
-  
+
   # Note input files
   transactions_file <- file.path(data_folder, "dummy_transactions.csv")
-  transaction_coding_file <- file.path(data_folder, "dummy_transaction_coding_dictionary.csv")
+  transaction_coding_file <-
+    file.path(data_folder, "dummy_transaction_coding_dictionary.csv")
 }
 
 # Source functions
@@ -36,7 +37,7 @@ source("data_processing_functions.R")
 
 # Load the transactions
 transactions <- read.csv(
-  transactions_file, 
+  transactions_file,
   stringsAsFactors = FALSE,
   check.names = FALSE
 )
@@ -46,13 +47,13 @@ transaction_types <- read.csv(
   transaction_coding_file,
   stringsAsFactors = FALSE
 )
-transaction_coding <- build_transaction_coding_dictionary(transaction_types)
+transaction_coding <- load_transaction_coding(transaction_types)
 
 #### Process transactions ####
 
 # Convert date column to dates
 transactions[, date_column] <- as.Date(
-  transactions[, date_column], 
+  transactions[, date_column],
   format = date_format
 )
 
@@ -63,10 +64,12 @@ transactions_dates <- range(transactions[, date_column])
 transactions$month <- format(transactions[, date_column], "%m/%Y")
 
 # Clean up transaction descriptions
-transactions[, description_column] <- clean_strings(transactions[, description_column])
+transactions[, description_column] <- clean_strings(
+  transactions[, description_column]
+)
 
 # Classify transactions based on key words
-transactions[, c("Type", "Pattern")] <-  
+transactions[, c("Type", "Pattern")] <-
   classify_transactions(
     transactions[, description_column],
     transaction_coding
@@ -75,10 +78,11 @@ transactions[, c("Type", "Pattern")] <-
 #### Identify unclassified transactions ####
 
 # Summarise unclassified transactions
-summary_of_unclassifieds <- identify_and_summarise_unclassified_transactions(
+summary_of_unclassifieds <- summarise_unclassified(
   transactions,
-  in_column, 
-  out_column
+  in_column,
+  out_column,
+  description_column
 )
 
 #### Calculate monthly statistics ####
@@ -89,7 +93,7 @@ totals_by_month <- summarise_transactions(
   in_column = in_column,
   out_column = out_column,
   grouping_columns = "month",
-  FUN=sum
+  FUN = sum
 )
 
 # Make debit column negative
@@ -109,7 +113,7 @@ totals_by_type_and_month <- summarise_transactions(
   in_column = in_column,
   out_column = out_column,
   grouping_columns = c("month", "Type"),
-  FUN=sum,
+  FUN = sum,
   calculate_average = FALSE
 )
 
@@ -120,17 +124,18 @@ average_by_type <- summarise_transactions(
   in_column = in_column,
   out_column = out_column,
   grouping_columns = "Type",
-  FUN=mean,
+  FUN = mean,
   calculate_average = FALSE
 )
 average_by_type <- average_by_type[order(average_by_type$difference), ]
 
 # Get each types difference by month as column
-# Taken from: https://stackoverflow.com/questions/67778341/are-there-alternative-r-base-functions-to-pivot-wider
+# Taken from:
+# https://stackoverflow.com/questions/67778341/are-there-
+# alternative-r-base-functions-to-pivot-wider
 totals_by_type_and_month$Type <- as.factor(totals_by_type_and_month$Type)
 type_difference_by_month <- as.data.frame.matrix(
   xtabs(difference ~ month + Type, totals_by_type_and_month)
 )
 type_difference_by_month$month <- row.names(type_difference_by_month)
 type_difference_by_month <- order_by_month(type_difference_by_month)
-
