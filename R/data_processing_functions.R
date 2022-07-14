@@ -307,7 +307,7 @@ summarise_transactions <- function(transactions, in_column,
 #' order rows by this column
 #' @param by_month_data dataframe with a month column
 #' @param month_column name of month column. Defaults to "month"
-#' @return returns datframe ordered by month column
+#' @return returns dataframe ordered by month column
 order_by_month <- function(by_month_data, month_column = "month") {
 
   # Check month column present
