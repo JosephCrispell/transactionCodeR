@@ -8,9 +8,11 @@ fsf
 gmail
 gpl
 https
+importFrom
 LazyData
 lgpl
 licensors
+ly
 MERCHANTABILITY
 mit
 noncommercially
@@ -23,6 +25,7 @@ relicensing
 repo
 repository
 Rmd
+roxygen
 Roxygen
 RoxygenNote
 sublicenses
