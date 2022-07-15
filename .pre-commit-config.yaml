@@ -13,7 +13,8 @@ repos:
           (.*/|)\.Rprofile|
           (.*/|)\.Renviron|
           (.*/|)\.gitignore|
-          (.*/|)NAMESPACE|
+          NAMESPACE|
+          DESCRIPTION|
           (.*/|)WORDLIST|
           (.*/|)\.travis.yml|
           (.*/|)appveyor.yml|
