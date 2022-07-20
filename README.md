@@ -1,3 +1,7 @@
+[![R build status](https://github.com/JosephCrispell/transactionCodeR/workflows/R/badge.svg)](https://github.com/JosephCrispell/transactionCodeR/actions?workflow=R)
+[![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/transactionCodeR?style=social)](https://github.com/JosephCrispell/transactionCodeR)
+
+
 # transaction-coder
 Code to classify bank account transactions based on key words
 
