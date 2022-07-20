@@ -15,13 +15,15 @@ params:
 # Load required packages
 library(rmarkdown) # building this report
 library(DT) # interactive tables
-library(plotly) # interactive graphics
 
 # Set default code chunk options
 knitr::opts_chunk$set(echo = FALSE)
 
-# Note data folder
-data_folder <- file.path("..", "data")
+# Note R library
+r_library <- file.path("..", "..", "R")
+
+# Note the data folder
+data_folder <- file.path("..", "..", "data")
 
 # Note key parameters
 date_column <- "Date"
@@ -41,7 +43,7 @@ transaction_coding_file <- file.path(
 building_report <- TRUE
 
 # Source plotting functions
-source("plotting_functions.R")
+source(file.path(r_library, "plotting_functions.R"))
 ```
 
 ```{r data_processing, include = FALSE}
