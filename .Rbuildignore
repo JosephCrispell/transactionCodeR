@@ -1,3 +1,4 @@
 ^transactionCodeR\.Rproj$
 ^\.Rproj\.user$
 R/setup\.R
+^\.pre-commit-config\.yaml$
