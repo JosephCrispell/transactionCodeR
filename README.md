@@ -4,7 +4,7 @@
 # transaction-coder
 
 ## Summary
-An early R package with functions to explore monthly bank transactions data breaking them down by the type of transaction. The type of transaction is defined based upon key words (or patterns) observed in each transaction's description.
+An early R package with functions to explore monthly bank transactions data breaking them down by the type of transaction. The type of transaction is defined based upon key words (or patterns) observed in each transaction's description. See an [example report](https://josephcrispell.github.io/standalone/transaction_coding_report.html) you can generate to give you an idea of what you can generate.
 
 ## Defining transaction types
 
@@ -59,7 +59,23 @@ devtools::install_github("JosephCrispell/transactionCodeR")
 library(basicPlotteR)
 ```
 
-### Precommit installation (*for development*)
+## Building your report
+
+The [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) Rmarkdown script represents a template report you can use to analyse your monthly bank transactions by their type.
+
+The [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) is designed to run on dummy transaction data but can easily be modified to run on your own data:
+- Edit the input parameters when knitting the Rmarkdown file providing the file names for your bank transactions data and transactions types files ([more info on knitting with parameters](https://bookdown.org/yihui/rmarkdown/params-knit.html))
+- Update the following lines with the correct column names and date format: https://github.com/JosephCrispell/transactionCodeR/blob/98d87143cf1f9599fb815d145a71b2785f6b6564/R/transaction_coding_report.Rmd#L26-L31
+
+The report will automatically call the [`inst/R/process_transactions.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/process_transactions.R) script to process the transactions data provided based upon the parameters set above.
+
+## Generating dummy data
+
+For ease of use, some [dummy bank transactions data](https://github.com/JosephCrispell/transactionCodeR/blob/main/data/dummy_transactions.csv) were generated along with a [transaction type file](dummy_transaction_coding_dictionary.csv). These were generated (and can be readily recreated using the [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) script) to provide examples of the input files.
+
+While you are getting comfortable with this R package you can use these dummy data files as input, for example (as noted above) the example Rmarkdown report will by default point to these data files.
+
+## Precommit installation (*for development*)
 The current repo uses a precommit continuous integration workflow. A precommit workflow triggers a set of task each time you commit any changed files. Here, the tasks mainly help with maintaining a standard coding style and spotting any minor mistakes in the code.
 
 To install the workflow run the following: ([more info here](https://pre-commit.com/)):
