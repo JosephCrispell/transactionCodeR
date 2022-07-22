@@ -16,7 +16,7 @@ on:
 
 jobs:
   R:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v3
       - uses: r-lib/actions/setup-r@v1
