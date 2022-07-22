@@ -7,6 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "crispelljoseph@gmail.com")
 Description: Functions to classify bank account transactions based upon key words in transaction descriptions. Example report provided in \code(inst/R/transaction_coding_report.Rmd)
+Depends: R (>= 3.5.0), plotly (>= 4.5.0)
 License: `use_gpl3_license()`
 Encoding: UTF-8
 LazyData: true
