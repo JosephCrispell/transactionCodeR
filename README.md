@@ -1,4 +1,7 @@
-# transactionCodeR
+[![R build status](https://github.com/JosephCrispell/transactionCodeR/workflows/R/badge.svg)](https://github.com/JosephCrispell/transactionCodeR/actions?workflow=R)
+[![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/transactionCodeR?style=social)](https://github.com/JosephCrispell/transactionCodeR/)
+
+# transaction-coder
 
 ## Summary
 An early R package with functions to explore monthly bank transactions data breaking them down by the type of transaction. The type of transaction is defined based upon key words (or patterns) observed in each transaction's description.
