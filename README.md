@@ -41,8 +41,8 @@ Note that the names of the above can be specified. For example in the report Rma
 `transactionCodeR` is an R package with the following requirements:
 
 **data**
-- Bank transactions data in `CSV` format (see [Bank transaction data section](https://github.com/JosephCrispell/transactionCodeR#bank-transactions-data) above)
-- Key words (or patterns) defining transaction types (see [Defining transaction types section](https://github.com/JosephCrispell/transactionCodeR#defining-transaction-types) above)
+- Bank transactions data in `CSV` format (see [Bank transaction data](https://github.com/JosephCrispell/transactionCodeR#bank-transactions-data) section above)
+- Key words (or patterns) defining transaction types (see [Defining transaction types](https://github.com/JosephCrispell/transactionCodeR#defining-transaction-types) section above)
 
 **software**
 - [R](https://www.r-project.org/)
