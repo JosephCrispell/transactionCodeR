@@ -1,21 +1,15 @@
 #### Preparation ####
 
-# Load required packages
-library(rmarkdown) # building this report
-library(DT) # interactive tables
-library(plotly) # interactive graphics
-
 # Set default code chunk options
 knitr::opts_chunk$set(echo = FALSE)
 
 # Check if current script being sourced for building report
 if (exists("building_report") == FALSE) {
-
   # Set working directory to current script location
   setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
   # Note data folder
-  data_folder <- file.path("..", "data")
+  data_folder <- file.path("..", "..", "data")
 
   # Note key parameters
   date_column <- "Date"
@@ -30,8 +24,11 @@ if (exists("building_report") == FALSE) {
     file.path(data_folder, "dummy_transaction_coding_dictionary.csv")
 }
 
+# Note R library
+r_library <- file.path("..", "..", "R")
+
 # Source functions
-source("data_processing_functions.R")
+source(file.path(r_library, "data_processing_functions.R"))
 
 #### Load data ####
 

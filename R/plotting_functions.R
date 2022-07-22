@@ -83,6 +83,9 @@ plot_values_by_month <- function(data, month_column = "month",
 #' @param month_column column with months in. Defaults to "month"
 #' @param y_axis_label label for Y axis. Defaults to "£"
 #' @param title title for plot. Defaults to "Values by month"
+#' @importFrom plotly plot_ly
+#' @importFrom plotly layout
+#' @importFrom plotly add_trace
 plotly_values_by_month <- function(data, month_column = "month",
                                    y_axis_label = "£",
                                    title = "Values by month") {
@@ -98,20 +101,15 @@ plotly_values_by_month <- function(data, month_column = "month",
   # Create the initial plot
   fig <- plotly::plot_ly(type = "scatter", mode = "lines")
 
-  # Add X axis
+  # Add title, X axis, and Y axis label
   fig <- plotly::layout(
     fig,
+    title = title,
     xaxis = list(
       ticktext = as.list(months),
       tickvals = as.list(x_ticks),
       tickmode = "array"
-    )
-  )
-
-  # Add title and Y axis label
-  fig <- plotly::layout(
-    fig,
-    title = title,
+    ),
     yaxis = list(title = y_axis_label)
   )
 
@@ -160,6 +158,8 @@ plot_values_bar_chart <- function(values, names, ...) {
 #' @param values values (length) for each bar
 #' @param names names for each bar
 #' @param title title for plot
+#' @importFrom plotly plot_ly
+#' @importFrom plotly layout
 plotly_values_bar_chart <- function(values, names, title, ...) {
 
   # Create the bar chart

@@ -3,11 +3,14 @@
 # Set working directory to current script location
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
+# Note R library
+r_library <- file.path("..", "..", "R")
+
 # Source functions to generate dummy data
-source("dummy_data_functions.R")
+source(file.path(r_library, "dummy_data_functions.R"))
 
 # Note the data folder
-data_folder <- file.path("..", "data")
+data_folder <- file.path("..", "..", "data")
 
 # Note key parameters
 start_date <- as.Date("01-01-2022", format = "%d-%m-%Y")

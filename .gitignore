@@ -1,3 +1,7 @@
+# R package files
+.Rproj.user
+*.Rproj
+
 # Ignore the data folder
 data/*
 !data/README.md
