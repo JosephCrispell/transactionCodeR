@@ -1,11 +1,15 @@
 Affero
+args
 aut
+CMD
 copyrightable
 cre
 Crispell
 crispelljoseph
+deps
 devtools
 fsf
+github
 gmail
 gpl
 https
@@ -22,6 +26,8 @@ plotly
 pre
 precommit
 Precommit
+rcmdcheck
+readme
 recognised
 relicensing
 repo
@@ -32,6 +38,7 @@ Rmd
 roxygen
 Roxygen
 RoxygenNote
+Rscript
 RStudio
 sublicenses
 Sublicensing
@@ -39,6 +46,7 @@ Summarise
 summarises
 tabset
 transactionCodeR
+ubuntu
 visualisations
 WIPO
 www
