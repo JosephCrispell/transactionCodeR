@@ -69,6 +69,8 @@ The [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/t
 
 The report will automatically call the [`inst/R/process_transactions.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/process_transactions.R) script to process the transactions data provided based upon the parameters set above.
 
+[Here is an example report](https://josephcrispell.github.io/standalone/transaction_coding_report.html) that is generated based on the dummy data provided with this R package.
+
 ## Generating dummy data
 
 For ease of use, some [dummy bank transactions data](https://github.com/JosephCrispell/transactionCodeR/blob/main/data/dummy_transactions.csv) were generated along with a [transaction type file](dummy_transaction_coding_dictionary.csv). These were generated (and can be readily recreated using the [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) script) to provide examples of the input files.
