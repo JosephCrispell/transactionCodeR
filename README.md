@@ -75,6 +75,8 @@ For ease of use, some [dummy bank transactions data](https://github.com/JosephCr
 
 While you are getting comfortable with this R package you can use these dummy data files as input, for example (as noted above) the example Rmarkdown report will by default point to these data files.
 
+As noted above, you can recreate the dummy data using the [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) script. Within this script you can edit the characteristics of the dummy data by editing the `transaction_types` list here: https://github.com/JosephCrispell/transactionCodeR/blob/cd35fa00891bc9c3903a8b7e11c57250e5ee332c/inst/R/generate_dummy_data.R#L18-L44
+
 ## Precommit installation (*for development*)
 The current repo uses a precommit continuous integration workflow. A precommit workflow triggers a set of task each time you commit any changed files. Here, the tasks mainly help with maintaining a standard coding style and spotting any minor mistakes in the code.
 
