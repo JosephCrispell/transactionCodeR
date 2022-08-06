@@ -1,5 +1,6 @@
 [![R-CMD-check](https://github.com/JosephCrispell/transactionCodeR/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/JosephCrispell/transactionCodeR/actions/workflows/R-CMD-check.yml)
 [![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/transactionCodeR?style=social)](https://github.com/JosephCrispell/transactionCodeR/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # transaction-coder
 
