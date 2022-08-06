@@ -60,13 +60,32 @@ devtools::install_github("JosephCrispell/transactionCodeR")
 library(basicPlotteR)
 ```
 
+## Example scripts
+
+There are two scripts provided with this R package. To locate these scripts once the R package is installed use the following code:
+```r
+transaction_report_script_path <- system.file(
+    "inst", "R", "transaction_coding_report.Rmd",
+    package = "transactionCodeR"
+)
+dummy_data_script_path <- system.file(
+    "inst", "R", "generate_dummy_data.R",
+    package = "transactionCodeR"
+)
+```
+
+These two scripts do the following (more detail on these in later sections):
+- [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) - building a report summarising transactions by month
+- [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) - generating dummy transaction data
+
 ## Building your report
+
 
 The [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) Rmarkdown script represents a template report you can use to analyse your monthly bank transactions by their type.
 
 The [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) is designed to run on dummy transaction data but can easily be modified to run on your own data:
-- Edit the input parameters when knitting the Rmarkdown file providing the file names for your bank transactions data and transactions types files ([more info on knitting with parameters](https://bookdown.org/yihui/rmarkdown/params-knit.html))
-- Update the following lines with the correct column names and date format: https://github.com/JosephCrispell/transactionCodeR/blob/98d87143cf1f9599fb815d145a71b2785f6b6564/R/transaction_coding_report.Rmd#L26-L31
+  - Edit the input parameters when knitting the Rmarkdown file providing the file names for your bank transactions data and transactions types files ([more info on knitting with parameters](https://bookdown.org/yihui/rmarkdown/params-knit.html))
+  - Update the following lines with the correct column names and date format: https://github.com/JosephCrispell/transactionCodeR/blob/98d87143cf1f9599fb815d145a71b2785f6b6564/R/transaction_coding_report.Rmd#L26-L31
 
 The report will automatically call the [`inst/R/process_transactions.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/process_transactions.R) script to process the transactions data provided based upon the parameters set above.
 
