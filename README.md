@@ -1,5 +1,6 @@
 [![R-CMD-check](https://github.com/JosephCrispell/transactionCodeR/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/JosephCrispell/transactionCodeR/actions/workflows/R-CMD-check.yml)
 [![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/transactionCodeR?style=social)](https://github.com/JosephCrispell/transactionCodeR/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # transaction-coder
 
@@ -78,6 +79,16 @@ For ease of use, some [dummy bank transactions data](https://github.com/JosephCr
 While you are getting comfortable with this R package you can use these dummy data files as input, for example (as noted above) the example Rmarkdown report will by default point to these data files.
 
 As noted above, you can recreate the dummy data using the [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) script. Within this script you can edit the characteristics of the dummy data by editing the `transaction_types` list here: https://github.com/JosephCrispell/transactionCodeR/blob/cd35fa00891bc9c3903a8b7e11c57250e5ee332c/inst/R/generate_dummy_data.R#L18-L44
+
+For each type of dummay data you create you can use the following parameters to create it's values specified within a list structure:
+- `"average_value"`: average value (mean)
+- `"standard_deviation"`: standard deviation from average value for transaction. Defaults to 10% of value.
+- `"type"`: type of transaction ("in" (credit), or "out" (debit))
+- `"frequency"`: frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random")
+- `"day_of_month"`: if monthly, which day of month. Defaults to 1 (first day).
+- `"n_per_month"`: if random frequency, on average how many transactions per month. Defaults to 4.
+- `"day_of_week"`: if weekly, which day of week. Defaults to 1 (first day).
+- `"patterns"`: patterns to use as transaction descriptions. Defaults to  name of transaction type.
 
 ## Precommit installation (*for development*)
 The current repo uses a precommit continuous integration workflow. A precommit workflow triggers a set of task each time you commit any changed files. Here, the tasks mainly help with maintaining a standard coding style and spotting any minor mistakes in the code.
