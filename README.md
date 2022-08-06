@@ -2,7 +2,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/JosephCrispell/transactionCodeR?style=social)](https://github.com/JosephCrispell/transactionCodeR/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# transaction-coder
+# transactionCodeR
 
 ## Summary
 An early R package with functions to explore monthly bank transactions data breaking them down by the type of transaction. The type of transaction is defined based upon key words (or patterns) observed in each transaction's description. See an [example report](https://josephcrispell.github.io/standalone/transaction_coding_report.html) you can generate to give you an idea of what you can generate.
