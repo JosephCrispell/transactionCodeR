@@ -62,10 +62,14 @@ library(basicPlotteR)
 
 ## Example scripts
 
-There are two scripts provided with this R package. To locate these scripts once the R package is installed use the following code:
+There are three scripts provided with this R package. To locate these scripts once the R package is installed use the following code:
 ```r
 transaction_report_script_path <- system.file(
     "inst", "R", "transaction_coding_report.Rmd",
+    package = "transactionCodeR"
+)
+process_transactions_script_path <- system.file(
+    "inst", "R", "process_transactions.R",
     package = "transactionCodeR"
 )
 dummy_data_script_path <- system.file(
@@ -75,7 +79,8 @@ dummy_data_script_path <- system.file(
 ```
 
 These two scripts do the following (more detail on these in later sections):
-- [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) - building a report summarising transactions by month
+- [`inst/R/transaction_coding_report.Rmd`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/transaction_coding_report.Rmd) - building a report summarising transactions by month and type
+- [`inst/R/process_transactions.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/process_transactions.R) - code to process transactions and summarise by type and month
 - [`inst/R/generate_dummy_data.R`](https://github.com/JosephCrispell/transactionCodeR/blob/main/inst/R/generate_dummy_data.R) - generating dummy transaction data
 
 ## Building your report
