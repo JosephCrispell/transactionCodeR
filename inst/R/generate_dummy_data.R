@@ -45,7 +45,8 @@ transaction_types <- list(
     "average_value" = 250, "type" = "out", "frequency" = "once"
   ),
   "Exclude" = list(
-    "avergae_value" = 1000, "type" = "in", "frequency" = "once"
+    "average_value" = 1000, "type" = "in", "frequency" = "once",
+    "patterns" = c("loan")
   )
 )
 

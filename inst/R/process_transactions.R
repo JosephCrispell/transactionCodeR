@@ -85,6 +85,7 @@ summary_of_unclassifieds <- summarise_unclassified(
 #### Calculate monthly statistics ####
 
 # Exclude payments with "Exclude" type
+transactions_raw <- transactions # Storing transactions before any excluded
 transactions_to_exclude <- transactions$Type == "Exclude"
 n_transactions_excluded <- sum(transactions_to_exclude)
 transactions <- transactions[transactions_to_exclude == FALSE, ]

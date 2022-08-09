@@ -74,7 +74,7 @@ With the following additional columns add based on the type classifications:
 - `Pattern` - pattern that matched for type classification
 
 ```{r transactions}
-datatable(transactions[, c(
+datatable(transactions_raw[, c(
   date_column, in_column,
   out_column, description_column,
   "Type", "Pattern"
