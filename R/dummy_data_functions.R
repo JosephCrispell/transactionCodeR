@@ -58,7 +58,7 @@ generate_transactions <- function(start_date, end_date, transaction_types) {
 #' @param type type of transaction ("in" (credit), or "out" (debit))
 #' @param frequency frequency that transaction type seen in transactions.
 #'                  Expecting one of c("monthly", "weekly", "daily",
-#'                  "weekdays", "random")
+#'                  "weekdays", "random", "once")
 #' @param start_date Date object for start date
 #' @param end_date Date object for end date
 #' @param random_n_per_month if random frequency, on average how many
