@@ -18,11 +18,14 @@ Key words or patterns are used to define transaction types and can be defined in
 |Bills        |Bills                         |
 |Subscriptions|films;music                   |
 |Rent         |Rent                          |
+|Surfboard    |Surfboard                     |
+|Exclude      |loan                          |
 
 Note these are very simplistic. The key things to note:
 - You can multiple key words (or patterns) matching to single transaction type
 - You can have as many transaction types as you want
 - The column names are required to be `Type` and `Patterns`
+- The transaction type `"Exclude"` can be used to exclude transactions matching the patterns from summary statistics generated
 
 ## Bank transactions data
 
@@ -108,7 +111,7 @@ For each type of dummay data you create you can use the following parameters to 
 - `"average_value"`: average value (mean)
 - `"standard_deviation"`: standard deviation from average value for transaction. Defaults to 10% of value.
 - `"type"`: type of transaction ("in" (credit), or "out" (debit))
-- `"frequency"`: frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random")
+- `"frequency"`: frequency that transaction type seen in transactions. Expecting one of c("monthly", "weekly", "daily", "weekdays", "random", "once")
 - `"day_of_month"`: if monthly, which day of month. Defaults to 1 (first day).
 - `"n_per_month"`: if random frequency, on average how many transactions per month. Defaults to 4.
 - `"day_of_week"`: if weekly, which day of week. Defaults to 1 (first day).
