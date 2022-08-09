@@ -91,6 +91,8 @@ Based on the above type classifications using key words, the following transacti
 datatable(summary_of_unclassifieds, rownames = FALSE)
 ```
 
+> Importantly, `r n_transactions_excluded` transactions were excluded as these were classified as the "Exclude" type in the `r transaction_coding_file` file provided.
+
 # Average monthly earnings and costs {.tabset}
 
 Without considering transaction type the average monthly earnings, costs, and savings are the following:
