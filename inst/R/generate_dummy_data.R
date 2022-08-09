@@ -40,6 +40,10 @@ transaction_types <- list(
   "Rent" = list(
     "average_value" = 300, "type" = "out",
     "frequency" = "monthly", "standard_deviation" = 0
+  ),
+  "Surfboard" = list(
+    "average_value" = 250, "type" = "out", "frequency" = "once",
+    "patterns" = c("EXCLUDE")
   )
 )
 

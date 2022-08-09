@@ -10,13 +10,11 @@
 #' @return a dataframe of random transactions matching details of each type
 #'         of transaction
 generate_transactions <- function(start_date, end_date, transaction_types) {
-
   # Build a dataframe to store transactions
   full_transactions <- NULL
 
   # Examine each transaction type
   for (transaction_name in names(transaction_types)) {
-
     # Generate transactions
     current_transactions <- generate_transactions_for_type(
       average_value = transaction_types[[transaction_name]]$average_value,
@@ -81,7 +79,6 @@ generate_transactions_for_type <- function(average_value, name, type, frequency,
                                            day_of_month = NULL,
                                            day_of_week = NULL,
                                            patterns = NULL) {
-
   # Set default values for optional variables
   random_n_per_month <- ifelse(is.null(random_n_per_month),
     4, random_n_per_month
@@ -93,6 +90,11 @@ generate_transactions_for_type <- function(average_value, name, type, frequency,
   day_of_week <- ifelse(is.null(day_of_week), 1, day_of_week)
   if (is.null(patterns)) {
     patterns <- name
+  }
+
+  # Check if once off payment
+  if (frequency == "once") {
+    standard_deviation <- 0
   }
 
   # Generate transaction dates
@@ -145,11 +147,10 @@ generate_transaction_dates <- function(start_date, end_date, frequency,
                                        random_n_per_month = 4,
                                        day_of_month = 1,
                                        day_of_week = 1) {
-
   # Check frequency has expected value
   expected_frequency_types <- c(
     "monthly", "weekly", "daily", "weekdays",
-    "random"
+    "random", "once"
   )
   if (frequency %in% expected_frequency_types == FALSE) {
     stop(
@@ -170,6 +171,8 @@ generate_transaction_dates <- function(start_date, end_date, frequency,
   date_series[["weekdays"]] <-
     date_series[["daily"]][weekdays(date_series[["daily"]]) %in%
       c("Saturday", "Sunday") == FALSE]
+
+  # Generate random date series
   date_series[["random"]] <- sample(
     date_series[["daily"]],
     size = length(date_series[["monthly"]]) * random_n_per_month
@@ -178,6 +181,9 @@ generate_transaction_dates <- function(start_date, end_date, frequency,
   # Change monthly/weekly series based on day of month/week
   date_series[["monthly"]] <- date_series[["monthly"]] + (day_of_month - 1)
   date_series[["weekly"]] <- date_series[["weekly"]] + (day_of_week - 1)
+
+  # Select random date for once off payment
+  date_series[["once"]] <- sample(date_series[["daily"]], size = 1)
 
   # Return selected date series
   return(date_series[[frequency]])
@@ -189,7 +195,6 @@ generate_transaction_dates <- function(start_date, end_date, frequency,
 #' @param transaction_types a list with details for each transaction type
 #'                          expected
 write_transaction_types <- function(file_path, transaction_types) {
-
   # Initialise transaction type dataframe
   transaction_types_dataframe <- data.frame(
     "Type" = names(transaction_types),
@@ -200,7 +205,6 @@ write_transaction_types <- function(file_path, transaction_types) {
   transaction_types_dataframe$Patterns <- sapply(
     seq_along(transaction_types),
     FUN = function(index, transaction_types) {
-
       # Get transaction types
       types <- names(transaction_types)
 
