@@ -42,8 +42,10 @@ transaction_types <- list(
     "frequency" = "monthly", "standard_deviation" = 0
   ),
   "Surfboard" = list(
-    "average_value" = 250, "type" = "out", "frequency" = "once",
-    "patterns" = c("EXCLUDE")
+    "average_value" = 250, "type" = "out", "frequency" = "once"
+  ),
+  "Exclude" = list(
+    "avergae_value" = 1000, "type" = "in", "frequency" = "once"
   )
 )
 

@@ -84,6 +84,9 @@ summary_of_unclassifieds <- summarise_unclassified(
 
 #### Calculate monthly statistics ####
 
+# Exclude payments with "Exclude" type
+transactions <- transactions[transactions$Type != "Exclude", ]
+
 # Calculate total pay and costs by month
 totals_by_month <- summarise_transactions(
   transactions = transactions,
