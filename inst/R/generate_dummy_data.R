@@ -45,14 +45,15 @@ transaction_types <- list(
     "average_value" = 250, "type" = "out", "frequency" = "once"
   ),
   "Exclude" = list(
-    "average_value" = 1000, "type" = "in", "frequency" = "once",
+    "average_value" = "test", "type" = "in", "frequency" = "once",
     "patterns" = c("loan")
   )
 )
 
-#### Write out transaction coding/types dictionary ####
+# Check transaction type info provided
+check_dummy_transaction_types(transaction_types)
 
-# TODO check transaction type info
+#### Write out transaction coding/types dictionary ####
 
 # Write transaction types to file
 write_transaction_types(

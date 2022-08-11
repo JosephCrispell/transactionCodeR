@@ -1,4 +1,3 @@
-
 #' Remove weird characters from strings
 #'
 #' Removes any hidden characters or non-alphanumeric characters from strings
@@ -9,7 +8,6 @@ clean_strings <- function(strings) {
   cleaned_strings <- sapply(
     strings,
     FUN = function(string) {
-
       # Removed escaped characters
       string <- gsub(
         pattern = "\n|\t",
@@ -53,7 +51,6 @@ summarise_unclassified <- function(transactions,
                                    in_column,
                                    out_column,
                                    description_column) {
-
   # Identify unclassified transactions
   unclassified <- transactions[transactions$Type == "Unclassified", ]
 
@@ -83,7 +80,6 @@ summarise_unclassified <- function(transactions,
       unclassified$cost,
       by = list(unclassified[, description_column]),
       FUN = function(values) {
-
         # Calculate sum
         sum <- sum(values, na.rm = TRUE)
 
@@ -119,7 +115,6 @@ summarise_unclassified <- function(transactions,
 #' @return Returns list of transaction types and patterns that define them
 load_transaction_coding <- function(transactions_coding_df,
                                     delimiter = ";") {
-
   # Check transactions coding dataframe
   column_names <- colnames(transactions_coding_df)
   if (column_names[1] != "Type" || column_names[2] != "Patterns" ||
@@ -137,7 +132,6 @@ load_transaction_coding <- function(transactions_coding_df,
   transaction_coding_list <- lapply(
     transactions_coding_df$Patterns,
     FUN = function(delimited_patterns, delimiter) {
-
       # Extract patterns
       patterns <- unlist(strsplit(delimited_patterns, split = delimiter))
 
@@ -163,7 +157,6 @@ load_transaction_coding <- function(transactions_coding_df,
 #' @return Returns of named vector with transaction type and pattern that
 #'         matched
 classify_transaction <- function(description, transaction_coding) {
-
   # Check description is a string
   if (is.character(description) == FALSE) {
     stop(
@@ -178,10 +171,8 @@ classify_transaction <- function(description, transaction_coding) {
 
   # Examine each transaction type
   for (type in names(transaction_coding)) {
-
     # Examine each pattern for current transaction type
     for (pattern in transaction_coding[[type]]) {
-
       # Check for match in transaction description
       if (grepl(pattern, description, ignore.case = TRUE)) {
         transaction_type <- type
@@ -204,7 +195,6 @@ classify_transaction <- function(description, transaction_coding) {
 #' @return Returns of named vector with transaction type and pattern that
 #'         matched
 classify_transactions <- function(descriptions, transaction_coding) {
-
   # Classify each description - results stored in list
   types <- lapply(
     descriptions,
@@ -244,7 +234,6 @@ summarise_transactions <- function(transactions, in_column,
                                    calculate_average = TRUE,
                                    calculate_difference = TRUE,
                                    ...) {
-
   # Note required columns
   required_columns <- c(in_column, out_column, grouping_columns)
 
@@ -309,7 +298,6 @@ summarise_transactions <- function(transactions, in_column,
 #' @param month_column name of month column. Defaults to "month"
 #' @return returns dataframe ordered by month column
 order_by_month <- function(by_month_data, month_column = "month") {
-
   # Check month column present
   if (month_column %in% colnames(by_month_data) == FALSE) {
     stop(paste0("Month column (", month_column, ") not present in data!"))

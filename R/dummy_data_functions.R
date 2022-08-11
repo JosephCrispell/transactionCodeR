@@ -1,3 +1,71 @@
+#' Check transaction types list formatted correctly
+#'
+#' Transaction types list stores info about different transactions to be
+#' generated for dummy data
+#' @param transaction_types a list with details for each transaction type
+#'                          expected
+check_dummy_transaction_types <- function(transaction_types) {
+  # Note expected transaction parameters with info about class and values
+  parameters <- list(
+    "average_value" = list("class" = "numeric"),
+    "standard_deviation" = list("class" = "numeric"),
+    "type" = list("class" = "character", "values" = c("in", "out")),
+    "frequency" = list(
+      "class" = "character",
+      "values" = c(
+        "monthly", "weekly",
+        "daily", "weekdays",
+        "random", "once"
+      )
+    ),
+    "day_of_month" = list("class" = "numeric"),
+    "n_per_month" = list("class" = "numeric"),
+    "day_of_week" = list("class" = "numeric"),
+    "patterns" = list("class" = "character")
+  )
+  parameter_names <- names(parameters)
+
+  # Examine each transaction type info provided
+  for (type in names(transaction_types)) {
+    # Extract info for current transaction type
+    type_info <- transaction_types[[type]]
+
+    # Examine each parameter provided
+    for (parameter in names(type_info)) {
+      # Check parameter exists
+      if (parameter %in% parameter_names == FALSE) {
+        stop(paste0(
+          "ERROR! Transaction type's (", type, ") parameter name (",
+          parameter, ") not recognised! Must be one of: ",
+          paste(parameter_names, collapse = ", ")
+        ))
+      }
+
+      # Check parameter values class
+      if (class(type_info[[parameter]]) != parameters[[parameter]]$class) {
+        stop(paste0(
+          "ERROR! The class (", class(type_info[[parameter]]),
+          ") of parameter (", parameter,
+          ") of transaction type's (", type,
+          ") does not match expected class (",
+          parameters[[parameter]]$class, ")."
+        ))
+      }
+
+      # Check expected parameter values where available
+      expected_values <- parameters[[parameter]]$values
+      if (is.null(expected_values) == FALSE &&
+        type_info[[parameter]] %in% expected_values == FALSE) {
+        stop(paste0(
+          "ERROR! Unexpected value (", type_info[[parameter]],
+          ") provided for parameter (", parameter,
+          ") of transaction type (", type, ")."
+        ))
+      }
+    }
+  }
+}
+
 #' Generate random transactions based on transaction types
 #'
 #' Given a list providing information about different transaction types
